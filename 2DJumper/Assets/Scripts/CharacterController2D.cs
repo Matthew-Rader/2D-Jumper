@@ -11,8 +11,6 @@ public class CharacterController2D : MonoBehaviour
 	private bool facingRight = true;
 	private Vector3 velocity = Vector3.zero;
 
-	[SerializeField] private bool airControl = false;
-
 	[Header("Jump Parameters")]
 	[SerializeField] private float jumpForce = 15f;
 	[SerializeField] private float wallJumpForce = 13f;
@@ -35,6 +33,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float slideRate = 2f;
 	private bool canMove = true;
 
+	[SerializeField] private float controllerDeadZone = 0.25f;
 	[SerializeField] private float runSpeed = 40f;
 	float moveX;
 	float moveY;
@@ -53,8 +52,13 @@ public class CharacterController2D : MonoBehaviour
 
 	void Update()
 	{
-		moveX = Input.GetAxisRaw("Horizontal") * runSpeed;
-		moveY = Input.GetAxisRaw("Vertical") * runSpeed;
+		Vector2 stickInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+		if (stickInput.magnitude < controllerDeadZone)
+			stickInput = Vector2.zero;
+
+		moveX = stickInput.x * runSpeed;
+		moveY = stickInput.y * runSpeed;
 
 		if (Input.GetButtonDown("Jump"))
 			jumping = true;
@@ -81,7 +85,7 @@ public class CharacterController2D : MonoBehaviour
 		else
 		{
 			//only control the player if grounded or airControl is turned on
-			if ((playerColl.onGround || airControl) && canMove)
+			if (canMove)
 			{
 				// Move the character by finding the target velocity
 				Vector3 targetVelocity = new Vector2(x * 10f * Time.fixedDeltaTime, characterRigi.velocity.y);
