@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 745022892}
   - component: {fileID: 745022890}
   - component: {fileID: 2281047216388157535}
-  - component: {fileID: 628904276390192830}
+  - component: {fileID: 1755330972}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -73,8 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 6342156740507372259, guid: bca6b0653c7cff34eb4fb17279cf0a9a,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5f014a5934fa36c42a36a198233b5a15, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,10 +117,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc19a5677a771d47b1b4695faec2dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  airControl: 1
   jumpForce: 15
   wallJumpForce: 16
+  wallJumpVerticalControlDelay: 0.1
+  wallJumpAwayControlDelay: 0.15
+  wallJumpAwayAngleModifier: 0.5
   m_MovementSmoothing: 0.05
-  m_AirControl: 1
   fallMultiplier: 3.5
   lowJumpMultiplier: 5
   slideRate: 3
@@ -158,8 +160,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!58 &628904276390192830
-CircleCollider2D:
+--- !u!61 &1755330972
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,5 +174,15 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0

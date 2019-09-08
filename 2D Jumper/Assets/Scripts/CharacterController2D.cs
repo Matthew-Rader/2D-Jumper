@@ -8,8 +8,8 @@ public class CharacterController2D : MonoBehaviour
 {
 	private Collision playerColl;
 	private Rigidbody2D characterRigi;
-	private bool m_FacingRight = true;
-	private Vector3 m_Velocity = Vector3.zero;
+	private bool facingRight = true;
+	private Vector3 velocity = Vector3.zero;
 
 	[SerializeField] private bool airControl = false;
 
@@ -23,7 +23,7 @@ public class CharacterController2D : MonoBehaviour
 
 	[Space] 
 
-	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f; // How much to smooth out the movement
+	[Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f; // How much to smooth out the movement
 
 	[Header("Better Jumping Gravity Multiplier")]
 	[Space]
@@ -57,9 +57,7 @@ public class CharacterController2D : MonoBehaviour
 		moveY = Input.GetAxisRaw("Vertical") * runSpeed;
 
 		if (Input.GetButtonDown("Jump"))
-		{
 			jumping = true;
-		}
 
 		grabWall = Input.GetAxis("LT") == 0 ? false : true;
 	}
@@ -89,20 +87,7 @@ public class CharacterController2D : MonoBehaviour
 				Vector3 targetVelocity = new Vector2(x * 10f * Time.fixedDeltaTime, characterRigi.velocity.y);
 
 				// And then smoothing it out and applying it to the character
-				characterRigi.velocity = Vector3.SmoothDamp(characterRigi.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
-
-				// If the input is moving the player right and the player is facing left...
-				if (x > 0 && !m_FacingRight)
-				{
-					// ... flip the player.
-					Flip();
-				}
-				// Otherwise if the input is moving the player left and the player is facing right...
-				else if (x < 0 && m_FacingRight)
-				{
-					// ... flip the player.
-					Flip();
-				}
+				characterRigi.velocity = Vector3.SmoothDamp(characterRigi.velocity, targetVelocity, ref velocity, movementSmoothing);
 			}
 
 			if (!playerColl.onGround && playerColl.onWall && (x != 0f))
@@ -110,6 +95,8 @@ public class CharacterController2D : MonoBehaviour
 				WallSlide();
 			}
 		}
+
+		HandlePlayerSpriteFlip(x, y);
 
 		// If the player should jump...
 		if (jump)
@@ -133,7 +120,7 @@ public class CharacterController2D : MonoBehaviour
 			characterRigi.gravityScale = lowJumpMultiplier;
 			applyWallSlide = false;
 		}
-		else if (grabWall && playerColl.onWall)
+		else if (grabWall && playerColl.onWall && !playerColl.onGround)
 		{
 			characterRigi.gravityScale = 0f;
 		}
@@ -201,10 +188,26 @@ public class CharacterController2D : MonoBehaviour
 		canMove = true;
 	}
 
+	private void HandlePlayerSpriteFlip(float x, float y)
+	{
+		// If the input is moving the player right and the player is facing left...
+		if (x > 0 && !facingRight)
+		{
+			// ... flip the player.
+			Flip();
+		}
+		// Otherwise if the input is moving the player left and the player is facing right...
+		else if (x < 0 && facingRight)
+		{
+			// ... flip the player.
+			Flip();
+		}
+	}
+
 	private void Flip()
 	{
 		// Switch the way the player is labelled as facing.
-		m_FacingRight = !m_FacingRight;
+		facingRight = !facingRight;
 
 		// Multiply the player's x local scale by -1.
 		Vector3 theScale = transform.localScale;
