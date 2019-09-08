@@ -126,10 +126,12 @@ public class CharacterController2D : MonoBehaviour
 		if (characterRigi.velocity.y < 0)
 		{
 			characterRigi.gravityScale = fallMultiplier;
+			applyWallSlide = true;
 		}
-		else if (characterRigi.velocity.y > 0 /*&& !Input.GetButton("Jump")*/)
+		else if (characterRigi.velocity.y > 0)
 		{
 			characterRigi.gravityScale = lowJumpMultiplier;
+			applyWallSlide = false;
 		}
 		else if (grabWall && playerColl.onWall)
 		{
@@ -138,6 +140,7 @@ public class CharacterController2D : MonoBehaviour
 		else
 		{
 			characterRigi.gravityScale = 1f;
+			applyWallSlide = false;
 		}
 	}
 
