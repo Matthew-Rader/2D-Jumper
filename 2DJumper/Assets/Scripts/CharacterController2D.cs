@@ -6,40 +6,45 @@ using System.Collections.Generic;
 
 public class CharacterController2D : MonoBehaviour
 {
+	// PRIVATE ----------------------------------
 	private Collision playerColl;
 	private Rigidbody2D characterRigi;
 	private bool facingRight = true;
 	private Vector3 velocity = Vector3.zero;
+	private float moveX;
+	private float moveY;
+	private bool jumpInput = false;
+	private bool jumping = false;
+	private bool grabWall = false;
+	private bool applyWallSlide = true;
+	private bool canMove = true;
+
+	// SERIALIZED PRIVATE -----------------------
+	[Header("Movement")]
+	[SerializeField] private float runSpeed = 40f;
+	[Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
+	[SerializeField] private float controllerDeadZone = 0.25f;
 
 	[Header("Jump Parameters")]
-	[SerializeField] private float jumpForce = 15f;
+	[SerializeField] private float standardJumpForce = 15f;
 	[SerializeField] private float wallJumpForce = 13f;
 	[SerializeField] private float wallJumpVerticalControlDelay = 0.1f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
 	[Tooltip("0 will result in a vertical jump and 1 ~45*")]
 	[Range (0, 1)] [SerializeField] private float wallJumpAwayAngleModifier = 0.5f;
-
-	[Space] 
-
-	[Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f; // How much to smooth out the movement
+	[SerializeField] private float jumpOffLedgeDelay = 0.5f;
+	private float jumpOffLedgeCounter = 0.0f;
+	private bool canLedgeDelayJump = false; 
 
 	[Header("Better Jumping Gravity Multiplier")]
-	[Space]
 	[SerializeField] private float fallMultiplier = 3.5f;
 	[SerializeField] private float lowJumpMultiplier = 5f;
 
 	[Header("Wall Mechanics")]
-	[Space]
 	[SerializeField] private float slideRate = 2f;
-	private bool canMove = true;
-
-	[SerializeField] private float controllerDeadZone = 0.25f;
-	[SerializeField] private float runSpeed = 40f;
-	float moveX;
-	float moveY;
-	bool jumping = false;
-	bool grabWall = false;
-	bool applyWallSlide = true;
+	[SerializeField] private float wallGrabStaminaMax = 3.0f;
+	private float wallGrabStamina = 0.0f;
+	private bool wallGrabDepleted = false;
 
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
@@ -52,32 +57,28 @@ public class CharacterController2D : MonoBehaviour
 
 	void Update()
 	{
-		Vector2 stickInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		GetMovementInput();
 
-		if (stickInput.magnitude < controllerDeadZone)
-			stickInput = Vector2.zero;
-
-		moveX = stickInput.x * runSpeed;
-		moveY = stickInput.y * runSpeed;
+		JumpOffLedgeDelay();
 
 		if (Input.GetButtonDown("Jump"))
-			jumping = true;
+			jumpInput = true;
 
 		grabWall = Input.GetAxis("LT") == 0 ? false : true;
+
+		WallGrabStamina();
 	}
 
 	void FixedUpdate()
 	{
-		//Move(moveX * Time.fixedDeltaTime, jumping, grabWall);
-		Move(moveX, moveY, jumping, grabWall);
-		jumping = false;
+		Move(moveX, moveY, jumpInput, grabWall);
+		jumpInput = false;
 	}
 
-	//public void Move(float move, bool jump, bool grabWall)
 	public void Move (float x, float y, bool jump, bool grabWall)
 	{
 		//Debug.Log("On Wall: " + playerColl.onWall + " GrabWall: " + grabWall);
-		if (playerColl.onWall && grabWall && !playerColl.onGround && canMove)
+		if (playerColl.onWall && grabWall && !playerColl.onGround && canMove && !wallGrabDepleted)
 		{
 			//characterRigi.velocity = new Vector2(0f, 0f);
 			characterRigi.velocity = new Vector2(0f, (y * 10f * Time.fixedDeltaTime));
@@ -95,18 +96,14 @@ public class CharacterController2D : MonoBehaviour
 			}
 
 			if (!playerColl.onGround && playerColl.onWall && (x != 0f))
-			{
 				WallSlide();
-			}
 		}
 
 		HandlePlayerSpriteFlip(x, y);
 
-		// If the player should jump...
+		// If the player should jump
 		if (jump)
-		{
 			HandleJump();
-		}
 
 		ApplyGravityScale(grabWall);
 	}
@@ -124,7 +121,7 @@ public class CharacterController2D : MonoBehaviour
 			characterRigi.gravityScale = lowJumpMultiplier;
 			applyWallSlide = false;
 		}
-		else if (grabWall && playerColl.onWall && !playerColl.onGround)
+		else if (grabWall && playerColl.onWall && !playerColl.onGround && !wallGrabDepleted)
 		{
 			characterRigi.gravityScale = 0f;
 		}
@@ -135,41 +132,51 @@ public class CharacterController2D : MonoBehaviour
 		}
 	}
 
+	// Determines which type of jump that needs to be performed
 	private void HandleJump()
 	{
 		if (playerColl.onGround)
 		{
-			// Add a vertical force to the player.
+			//Debug.Log("Standard Jump");
 			playerColl.onGround = false;
-			characterRigi.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+			DoJump(Vector2.up, standardJumpForce);
+		}
+		else if (!playerColl.onGround && canLedgeDelayJump)
+		{
+			//Debug.Log("Delay Jump");
+			characterRigi.velocity = new Vector2(characterRigi.velocity.x, 0.0f);
+			DoJump(Vector2.up, standardJumpForce);
 		}
 		else if (playerColl.onWall && !playerColl.onGround) // Some sort of wall jump
 		{
 			// Vertical jump up a wall
-			if (grabWall && (moveX == 0 || (moveX < 0f && playerColl.onWallLeft) || (moveX > 0f && playerColl.onWallRight)))
+			if (grabWall && !wallGrabDepleted && (moveX == 0 || (moveX < 0f && playerColl.onWallLeft) || (moveX > 0f && playerColl.onWallRight)))
 			{
+				//Debug.Log("Vertical Jump");
 				StopCoroutine(DisableMovementWallJumpUp(0));
 				StartCoroutine(DisableMovementWallJumpUp(wallJumpVerticalControlDelay));
 
-				DoJump(Vector2.up, true);
+				DoJump(Vector2.up, wallJumpForce);
 			}
 			// Jump away from a wall
 			else
 			{
+				//Debug.Log("Wall Jump");
 				StopCoroutine(DisableMovementWallJumpOff(0));
 				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
 
-				Vector2 wallDir = playerColl.onWallRight ? Vector2.left : Vector2.right; //wallSide is -1 for left and 1 for right
-
-				DoJump((Vector2.up + wallDir * wallJumpAwayAngleModifier), true);
+				//wallSide is -1 for left and 1 for right
+				Vector2 wallDir = playerColl.onWallRight ? Vector2.left : Vector2.right; 
+				DoJump((Vector2.up + wallDir * wallJumpAwayAngleModifier), wallJumpForce);
 			}
 		}
 	}
 
-	private void DoJump(Vector2 dir, bool offWall)
+	private void DoJump(Vector2 dir, float jumpForce)
 	{
 		characterRigi.velocity = new Vector2(characterRigi.velocity.x, 0);
-		characterRigi.velocity += dir * wallJumpForce;
+		characterRigi.velocity += dir * jumpForce;
+		jumping = true;
 	}
 
 	IEnumerator DisableMovementWallJumpOff(float time)
@@ -208,6 +215,7 @@ public class CharacterController2D : MonoBehaviour
 		}
 	}
 
+	// Flips the player sprite
 	private void Flip()
 	{
 		// Switch the way the player is labelled as facing.
@@ -224,6 +232,54 @@ public class CharacterController2D : MonoBehaviour
 		if (applyWallSlide)
 		{
 			characterRigi.velocity = new Vector2(characterRigi.velocity.x, -slideRate);
+		}
+	}
+
+	private void GetMovementInput()
+	{
+		Vector2 movementInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+		if (movementInput.magnitude < controllerDeadZone)
+			movementInput = Vector2.zero;
+
+		moveX = movementInput.x * runSpeed;
+		moveY = movementInput.y * runSpeed;
+	}
+
+	private void JumpOffLedgeDelay()
+	{
+		if (playerColl.onGround)
+		{
+			jumpOffLedgeCounter = 0.0f;
+			canLedgeDelayJump = true;
+			jumping = false;
+		}
+		else if (!playerColl.onGround && !playerColl.onWall && !jumping && (jumpOffLedgeCounter < jumpOffLedgeDelay))
+		{
+			jumpOffLedgeCounter += Time.deltaTime;
+		}
+		else
+		{
+			canLedgeDelayJump = false;
+		}
+	}
+
+	private void WallGrabStamina()
+	{
+		if (playerColl.onWall && grabWall && !playerColl.onGround)
+			wallGrabStamina += Time.deltaTime;
+		else if (playerColl.onGround)
+			wallGrabStamina = 0.0f;
+
+		if (wallGrabStamina >= wallGrabStaminaMax)
+		{
+			wallGrabDepleted = true;
+			GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+		}
+		else
+		{
+			wallGrabDepleted = false;
+			GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
 		}
 	}
 }

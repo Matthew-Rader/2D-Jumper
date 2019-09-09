@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class Collision : MonoBehaviour
 {
@@ -40,15 +41,18 @@ public class Collision : MonoBehaviour
 
 		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
 		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-		onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, whatIsGround);
+		//onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, whatIsGround);
+		onGround = Physics2D.OverlapBox((Vector2)transform.position + bottomOffset, new Vector2(0.95f, 0.1f), 0.0f, whatIsGround);
 		if (!wasGrounded && onGround)
 			OnLandEvent.Invoke();
 
 		// Check for left wall collision
-		onWallLeft = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, whatIsWall);
+		//onWallLeft = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, whatIsWall);
+		onWallLeft = Physics2D.OverlapBox((Vector2)transform.position + leftOffset, new Vector2(0.1f, 0.9f), 0.0f, whatIsWall);
 
 		// Check for right wall collision
-		onWallRight = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, whatIsWall);
+		//onWallRight = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, whatIsWall);
+		onWallRight = Physics2D.OverlapBox((Vector2)transform.position + rightOffset, new Vector2(0.1f, 0.9f), 0.0f, whatIsWall);
 
 		onWall = onWallLeft || onWallRight ? true : false;
 
@@ -64,5 +68,19 @@ public class Collision : MonoBehaviour
 		Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
         Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
         Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
+		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(1.0f, 1.0f, 0.0f));
+	}
+
+	void OnCollisionEnter2D(Collision2D col)
+	{
+		if (col.gameObject.tag == "Spike")
+		{
+			RestartLevel();
+		}
+	}
+
+	void RestartLevel()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }
