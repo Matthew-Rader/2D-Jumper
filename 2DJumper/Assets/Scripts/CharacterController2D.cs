@@ -77,10 +77,12 @@ public class CharacterController2D : MonoBehaviour
 
 	public void Move (float x, float y, bool jump, bool grabWall)
 	{
+		// If the player is grounded and no longer moving the character null the player x velocity
 		if (playerColl.onGround && x == 0.0f)
 		{
 			characterRigi.velocity = new Vector2(0.0f, characterRigi.velocity.y);
 		}
+		// If the player is grabbing a wall then lock x movement and allow them to move up or down the wall
 		else if (playerColl.onWall && grabWall && !playerColl.onGround && canMove && !wallGrabDepleted)
 		{
 			//characterRigi.velocity = new Vector2(0f, 0f);
@@ -88,7 +90,6 @@ public class CharacterController2D : MonoBehaviour
 		}
 		else
 		{
-			//only control the player if grounded or airControl is turned on
 			if (canMove)
 			{
 				// Move the character by finding the target velocity
