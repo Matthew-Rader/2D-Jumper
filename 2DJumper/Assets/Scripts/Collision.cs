@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +19,12 @@ public class Collision : MonoBehaviour
 
 	[Header("Collision check points")]
 	[SerializeField] private float collisionRadius = .2f; // Radius of the overlap circle to determine if grounded
-	[SerializeField] private Vector2 bottomOffset, rightOffset, leftOffset;
+	private Vector2 bottomOffset = new Vector2(0f, -0.5f);
+	private Vector2 bottomOverlapBox = new Vector2(0.95f, 0.05f);
+	private Vector2 leftOffset = new Vector2(-0.5f, 0f);
+	private Vector2 leftOverlapBox = new Vector2(0.05f, 0.95f);
+	private Vector2 rightOffset = new Vector2(0.5f, 0f);
+	private Vector2 rightOverlapBox = new Vector2(0.05f, 0.95f);
 
 	[Header("Events")]
 	[Space]
@@ -28,31 +34,24 @@ public class Collision : MonoBehaviour
 	{
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
-
-		rightOffset = new Vector2(0.5f, 0f);
-		leftOffset = new Vector2(-0.5f, 0f);
-		bottomOffset = new Vector2(0f, -0.5f);
 	}
 
     // Update is called once per frame
     void FixedUpdate()
     {
 		bool wasGrounded = onGround;
+		
+		// Check for ground collision
+		onGround = Physics2D.OverlapBox((Vector2)transform.position + bottomOffset, bottomOverlapBox, 0.0f, whatIsGround);
 
-		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-		//onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, whatIsGround);
-		onGround = Physics2D.OverlapBox((Vector2)transform.position + bottomOffset, new Vector2(0.95f, 0.1f), 0.0f, whatIsGround);
 		if (!wasGrounded && onGround)
 			OnLandEvent.Invoke();
 
 		// Check for left wall collision
-		//onWallLeft = Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, whatIsWall);
-		onWallLeft = Physics2D.OverlapBox((Vector2)transform.position + leftOffset, new Vector2(0.1f, 0.9f), 0.0f, whatIsWall);
+		onWallLeft = Physics2D.OverlapBox((Vector2)transform.position + leftOffset, leftOverlapBox, 0.0f, whatIsWall);
 
 		// Check for right wall collision
-		//onWallRight = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, whatIsWall);
-		onWallRight = Physics2D.OverlapBox((Vector2)transform.position + rightOffset, new Vector2(0.1f, 0.9f), 0.0f, whatIsWall);
+		onWallRight = Physics2D.OverlapBox((Vector2)transform.position + rightOffset, rightOverlapBox, 0.0f, whatIsWall);
 
 		onWall = onWallLeft || onWallRight ? true : false;
 
@@ -63,12 +62,9 @@ public class Collision : MonoBehaviour
 	{
 		Gizmos.color = Color.red;
 
-		var positions = new Vector2[] { bottomOffset, rightOffset, leftOffset };
-
-		Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
-		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(1.0f, 1.0f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(0.95f, 0.05f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)leftOffset, new Vector3(0.05f, 0.95f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)rightOffset, new Vector3(0.05f, 0.95f, 0.0f));
 	}
 
 	void OnCollisionEnter2D(Collision2D col)

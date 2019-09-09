@@ -77,8 +77,11 @@ public class CharacterController2D : MonoBehaviour
 
 	public void Move (float x, float y, bool jump, bool grabWall)
 	{
-		//Debug.Log("On Wall: " + playerColl.onWall + " GrabWall: " + grabWall);
-		if (playerColl.onWall && grabWall && !playerColl.onGround && canMove && !wallGrabDepleted)
+		if (playerColl.onGround && x == 0.0f)
+		{
+			characterRigi.velocity = new Vector2(0.0f, characterRigi.velocity.y);
+		}
+		else if (playerColl.onWall && grabWall && !playerColl.onGround && canMove && !wallGrabDepleted)
 		{
 			//characterRigi.velocity = new Vector2(0f, 0f);
 			characterRigi.velocity = new Vector2(0f, (y * 10f * Time.fixedDeltaTime));
@@ -282,4 +285,4 @@ public class CharacterController2D : MonoBehaviour
 			GetComponent<SpriteRenderer>().color = new Color(255, 255, 255);
 		}
 	}
-}
+	}
