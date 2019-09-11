@@ -2140,7 +2140,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 44, y: -2, z: 0}
+  - first: {x: 43, y: -2, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2149,7 +2149,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: -2, z: 0}
+  - first: {x: 44, y: -2, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2212,7 +2212,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 44, y: -1, z: 0}
+  - first: {x: 43, y: -1, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2221,7 +2221,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: -1, z: 0}
+  - first: {x: 44, y: -1, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2248,7 +2248,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 44, y: 0, z: 0}
+  - first: {x: 43, y: 0, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2257,7 +2257,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: 0, z: 0}
+  - first: {x: 44, y: 0, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2284,6 +2284,15 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
+  - first: {x: 43, y: 1, z: 0}
+    second:
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_ObjectToInstantiate: {fileID: 0}
+      m_TileFlags: 1
+      m_ColliderType: 1
   - first: {x: 44, y: 1, z: 0}
     second:
       m_TileIndex: 0
@@ -2293,7 +2302,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: 1, z: 0}
+  - first: {x: 43, y: 2, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2311,7 +2320,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: 2, z: 0}
+  - first: {x: 43, y: 3, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2329,7 +2338,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: 3, z: 0}
+  - first: {x: 43, y: 4, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2347,7 +2356,7 @@ Tilemap:
       m_ObjectToInstantiate: {fileID: 0}
       m_TileFlags: 1
       m_ColliderType: 1
-  - first: {x: 45, y: 4, z: 0}
+  - first: {x: 43, y: 5, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2357,15 +2366,6 @@ Tilemap:
       m_TileFlags: 1
       m_ColliderType: 1
   - first: {x: 44, y: 5, z: 0}
-    second:
-      m_TileIndex: 0
-      m_TileSpriteIndex: 0
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_ObjectToInstantiate: {fileID: 0}
-      m_TileFlags: 1
-      m_ColliderType: 1
-  - first: {x: 45, y: 5, z: 0}
     second:
       m_TileIndex: 0
       m_TileSpriteIndex: 0
@@ -2535,13 +2535,13 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 2473341525937474928}
     m_ColliderPaths:
-    - - X: 450949987
+    - - X: 441149987
         Y: -19650000
-      - X: 450949987
+      - X: 441149987
         Y: 58950000
-      - X: 431150016
+      - X: 421349984
         Y: 58949971
-      - X: 431150045
+      - X: 421350013
         Y: -19650000
     - - X: 509749955
         Y: -98050000
@@ -2609,10 +2609,10 @@ CompositeCollider2D:
         Y: -98050000
   m_CompositePaths:
     m_Paths:
-    - - {x: 45.094997, y: 5.895}
-      - {x: 43.115, y: 5.894997}
-      - {x: 43.115005, y: -1.965}
-      - {x: 45.094997, y: -1.965}
+    - - {x: 44.114998, y: 5.895}
+      - {x: 42.135, y: 5.894997}
+      - {x: 42.135002, y: -1.965}
+      - {x: 44.114998, y: -1.965}
     - - {x: 50.974995, y: -0.96500003}
       - {x: 48.015, y: -0.9650029}
       - {x: 48.014996, y: -6.8450003}
@@ -2663,7 +2663,7 @@ GameObject:
   - component: {fileID: 2473341526084228649}
   m_Layer: 11
   m_Name: 1-2 Spikes
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

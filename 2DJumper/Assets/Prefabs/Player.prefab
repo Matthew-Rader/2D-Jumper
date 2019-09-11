@@ -117,17 +117,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cc19a5677a771d47b1b4695faec2dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 15
-  wallJumpForce: 16
+  runSpeed: 40
+  movementSmoothing: 0.05
+  controllerDeadZone: 0.25
+  standardJumpForce: 13
+  wallJumpForce: 14.5
   wallJumpVerticalControlDelay: 0.1
   wallJumpAwayControlDelay: 0.15
   wallJumpAwayAngleModifier: 0.5
-  movementSmoothing: 0.05
+  jumpOffLedgeDelay: 0.5
   fallMultiplier: 3.5
   lowJumpMultiplier: 5
   slideRate: 2
-  controllerDeadZone: 0.25
-  runSpeed: 40
   wallGrabStaminaMax: 3
 --- !u!114 &2281047216388157535
 MonoBehaviour:
@@ -153,9 +154,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   collisionRadius: 0.2
-  bottomOffset: {x: 0, y: -0.5}
-  rightOffset: {x: 0.5, y: 0}
-  leftOffset: {x: -0.5, y: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
