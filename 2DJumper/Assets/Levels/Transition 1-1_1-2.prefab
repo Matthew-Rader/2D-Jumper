@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 7950793434300803118}
   - component: {fileID: 7950793434300803119}
   - component: {fileID: 7950793434300803154}
+  - component: {fileID: 760923323}
   m_Layer: 0
   m_Name: T 1-1--1-2 Trigger
   m_TagString: Untagged
@@ -532,6 +533,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraA: {fileID: 0}
   cameraB: {fileID: 0}
+--- !u!114 &760923323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7950793434300803113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e148528b9e2564aa718355aa733a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPointA: {fileID: 0}
+  spawnPointB: {fileID: 0}
+  levelA: {fileID: 0}
+  levelB: {fileID: 0}
+  gameManager: {fileID: 0}
 --- !u!1 &7950793434630801192
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,7 +67,7 @@ public class Collision : MonoBehaviour
 		Gizmos.DrawWireCube(transform.position + (Vector3)rightOffset, new Vector3(0.05f, 0.95f, 0.0f));
 	}
 
-	void OnCollisionEnter2D(Collision2D col)
+	/*void OnCollisionEnter2D(Collision2D col)
 	{
 		if (col.gameObject.tag == "Spike")
 		{
@@ -78,5 +78,5 @@ public class Collision : MonoBehaviour
 	void RestartLevel()
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-	}
+	}*/
 }
