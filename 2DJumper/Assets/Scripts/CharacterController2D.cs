@@ -20,6 +20,8 @@ public class CharacterController2D : MonoBehaviour
 	private bool canMove = true;
 
 	// SERIALIZED PRIVATE -----------------------
+	[SerializeField] private GameManager gameManager;
+
 	[Header("Movement")]
 	[SerializeField] private float runSpeed = 40f;
 	[Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
@@ -53,6 +55,8 @@ public class CharacterController2D : MonoBehaviour
 	{
 		characterRigi = GetComponent<Rigidbody2D>();
 		playerColl = GetComponent<Collision>();
+
+		transform.position = gameManager.currentReSpawnPoint.transform.position;
 	}
 
 	void Update()
