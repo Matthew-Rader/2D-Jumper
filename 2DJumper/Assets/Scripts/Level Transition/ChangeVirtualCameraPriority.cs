@@ -9,8 +9,8 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 	[SerializeField] private CinemachineVirtualCamera cameraA;
 	[SerializeField] private CinemachineVirtualCamera cameraB;
 
-	private const float _coroutinePauseTime = 0.25f;
-	private const float _playerTransitionDistance = 2.1f;
+	private const float _coroutinePauseTime = 0.3f;
+	private const float _playerTransitionDistance = 2.2f;
 	private const float _TotalLerpTime = 0.1f;
 
 	void Awake()
@@ -66,11 +66,11 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 		playerRigi.constraints = RigidbodyConstraints2D.FreezeAll;
 
 		// Leave the player floating while the virtual cameras start to transition
-		// coroutinePauseTime = 0.25f
+		// _coroutinePauseTime = 0.3f
 		yield return new WaitForSeconds(_coroutinePauseTime);
 
 		// Lerp the player to a position just past the transition trigger.
-		// playerTransitionDistance = 2.1f
+		// _playerTransitionDistance = 2.2f
 		Vector3 newPosition = playerTransform.position + new Vector3(_playerTransitionDistance* direction, 0.0f, 0.0f);
 		Vector3 startingPosition = playerTransform.position;
 		float elapsedTime = 0.0f;

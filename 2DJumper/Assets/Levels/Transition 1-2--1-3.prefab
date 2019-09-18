@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 991070062}
   - component: {fileID: 991070063}
   - component: {fileID: 991070064}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: T 1-2--1-3 Trigger
-  m_TagString: Untagged
+  m_TagString: Transition
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
