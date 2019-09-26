@@ -242,9 +242,9 @@ GameObject:
   - component: {fileID: 7950793434300803116}
   - component: {fileID: 7950793434300803117}
   - component: {fileID: 7950793434300803119}
+  - component: {fileID: 867417104}
   - component: {fileID: 7950793434300803154}
   - component: {fileID: 760923323}
-  - component: {fileID: 867417104}
   m_Layer: 12
   m_Name: T 1-1--1-2 Trigger
   m_TagString: Transition
@@ -307,20 +307,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 7950793434300803119}
     m_ColliderPaths:
-    - - X: 166749987
-        Y: -68650000
-      - X: 166749987
-        Y: 9950000
-      - X: 156750000
-        Y: 9949971
-      - X: 156750029
-        Y: -68650000
+    - - X: 169999971
+        Y: -70000000
+      - X: 169999971
+        Y: 10000000
+      - X: 160000000
+        Y: 9999971
+      - X: 160000029
+        Y: -70000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 16.675, y: 0.995}
-      - {x: 15.675, y: 0.9949971}
-      - {x: 15.675003, y: -6.8650002}
-      - {x: 16.675, y: -6.8650002}
+    - - {x: 16.999996, y: 1}
+      - {x: 16, y: 0.99999714}
+      - {x: 16.000004, y: -7}
+      - {x: 16.999996, y: -7}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.000005
 --- !u!1839735485 &7950793434300803117
@@ -473,37 +473,6 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
---- !u!114 &7950793434300803154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950793434300803113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33efe34b86bf8a14ba4b2756efc2452a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraA: {fileID: 0}
-  cameraB: {fileID: 0}
---- !u!114 &760923323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7950793434300803113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9e148528b9e2564aa718355aa733a69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPointA: {fileID: 0}
-  spawnPointB: {fileID: 0}
-  levelA: {fileID: 0}
-  levelB: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!483693784 &867417104
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -550,6 +519,37 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &7950793434300803154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7950793434300803113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33efe34b86bf8a14ba4b2756efc2452a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraA: {fileID: 0}
+  cameraB: {fileID: 0}
+--- !u!114 &760923323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7950793434300803113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e148528b9e2564aa718355aa733a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPointA: {fileID: 0}
+  spawnPointB: {fileID: 0}
+  levelA: {fileID: 0}
+  levelB: {fileID: 0}
+  gameManager: {fileID: 0}
 --- !u!1 &7950793434630801192
 GameObject:
   m_ObjectHideFlags: 0
