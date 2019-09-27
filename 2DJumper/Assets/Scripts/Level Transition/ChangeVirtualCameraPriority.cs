@@ -55,12 +55,12 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 			{
 				Rigidbody2D playerRigi = col.gameObject.GetComponent<Rigidbody2D>();
 				Transform playerTransform = col.gameObject.GetComponent<Transform>();
-				StartCoroutine(DoTransition(playerRigi, playerTransform, direction));
+				StartCoroutine(DoPlayerTransition(playerRigi, playerTransform, direction));
 			}
 		}
 	}
 
-	IEnumerator DoTransition(Rigidbody2D playerRigi, Transform playerTransform, int direction)
+	IEnumerator DoPlayerTransition(Rigidbody2D playerRigi, Transform playerTransform, int direction)
 	{
 		// Freeze the players physic opperations
 		playerRigi.constraints = RigidbodyConstraints2D.FreezeAll;
