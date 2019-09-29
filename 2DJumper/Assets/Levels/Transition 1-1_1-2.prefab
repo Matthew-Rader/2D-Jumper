@@ -533,6 +533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraA: {fileID: 0}
   cameraB: {fileID: 0}
+  verticalTransition: 0
 --- !u!114 &760923323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,7 +547,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPointA: {fileID: 0}
+  noSpawnPointA: 0
   spawnPointB: {fileID: 0}
+  noSpawnPointB: 0
   levelA: {fileID: 0}
   levelB: {fileID: 0}
   gameManager: {fileID: 0}

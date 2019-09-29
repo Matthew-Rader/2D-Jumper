@@ -9,20 +9,22 @@ public class TransitionCurrentLevel : MonoBehaviour
 	// player spawn point and the known current level.
 
 	[SerializeField] private GameObject spawnPointA;
+	[SerializeField] private bool noSpawnPointA;
 	[SerializeField] private GameObject spawnPointB;
+	[SerializeField] private bool noSpawnPointB;
 	[SerializeField] private GameObject levelA;
 	[SerializeField] private GameObject levelB;
 	[SerializeField] private GameManager gameManager;
 
 	void Awake()
 	{
-		if (spawnPointA == null)
+		if (spawnPointA == null && !noSpawnPointA)
 		{
 			Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointA");
 			UnityEditor.EditorApplication.isPlaying = false;
 		}
 
-		if (spawnPointB == null)
+		if (spawnPointB == null && !noSpawnPointB)
 		{
 			Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointB");
 			UnityEditor.EditorApplication.isPlaying = false;

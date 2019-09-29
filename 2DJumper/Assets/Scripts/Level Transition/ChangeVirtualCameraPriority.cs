@@ -8,9 +8,11 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 {
 	[SerializeField] private CinemachineVirtualCamera cameraA;
 	[SerializeField] private CinemachineVirtualCamera cameraB;
+	[SerializeField] private bool verticalTransition = false;
 
 	private const float _coroutinePauseTime = 0.25f;
-	private const float _playerTransitionDistance = 3f;
+	private const float _playerTransitionHorizontalDistance = 3f;
+	private const float _playerTransitionVerticalDistance = 4f;
 	private const float _TotalLerpTime = 0.1f;
 
 	void Awake()
@@ -71,7 +73,12 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 
 		// Lerp the player to a position just past the transition trigger.
 		// _playerTransitionDistance = 3f
-		Vector3 newPosition = playerTransform.position + new Vector3(_playerTransitionDistance* direction, 0.0f, 0.0f);
+		Vector3 newPosition;
+		if (verticalTransition) 
+			newPosition = playerTransform.position + new Vector3(0.0f, _playerTransitionVerticalDistance * direction, 0.0f);
+		else
+			newPosition = playerTransform.position + new Vector3(_playerTransitionHorizontalDistance * direction, 0.0f, 0.0f);
+
 		Vector3 startingPosition = playerTransform.position;
 		float elapsedTime = 0.0f;
 		while (elapsedTime < _TotalLerpTime)

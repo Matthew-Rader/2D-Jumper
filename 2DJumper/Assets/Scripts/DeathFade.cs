@@ -21,8 +21,21 @@ public class DeathFade : MonoBehaviour
 	IEnumerator ReSpawnPlayer()
 	{
 		fadeAnim.SetTrigger("FadeOut");
+
+		// Freeze the players physic opperations
+		transform.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+
+		transform.GetComponent<CharacterController2D>().enabled = false;
+
 		yield return new WaitForSeconds(0.75f);
+
 		transform.position = gameManager.currentReSpawnPoint.transform.position;
+		transform.GetComponent<CharacterController2D>().enabled = true;
+
+		// Unfreeze the player's rigidbody
+		transform.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+		transform.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+
 		fadeAnim.SetTrigger("FadeIn");
 	}
 }
