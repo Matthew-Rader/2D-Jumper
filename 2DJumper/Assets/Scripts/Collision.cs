@@ -19,7 +19,7 @@ public class Collision : MonoBehaviour
 
 	[Header("Collision check points")]
 	[SerializeField] private float collisionRadius = .2f; // Radius of the overlap circle to determine if grounded
-	private Vector2 bottomOffset = new Vector2(0f, -0.625f);
+	private Vector2 bottomOffset = new Vector2(0f, -1f);
 	private Vector2 bottomOverlapBox = new Vector2(0.95f, 0.02f);
 	private Vector2 leftOffset = new Vector2(-0.5f, 0f);
 	private Vector2 leftOverlapBox = new Vector2(0.02f, 1.2f);
@@ -62,7 +62,7 @@ public class Collision : MonoBehaviour
 	{
 		Gizmos.color = Color.red;
 
-		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(0.95f, 0.05f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(0.9f, 0.05f, 0.0f));
 		Gizmos.DrawWireCube(transform.position + (Vector3)leftOffset, new Vector3(0.05f, 1.2f, 0.0f));
 		Gizmos.DrawWireCube(transform.position + (Vector3)rightOffset, new Vector3(0.05f, 1.2f, 0.0f));
 	}
