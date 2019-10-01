@@ -20,11 +20,11 @@ public class Collision : MonoBehaviour
 	[Header("Collision check points")]
 	[SerializeField] private float collisionRadius = .2f; // Radius of the overlap circle to determine if grounded
 	private Vector2 bottomOffset = new Vector2(0f, -1f);
-	private Vector2 bottomOverlapBox = new Vector2(0.95f, 0.02f);
-	private Vector2 leftOffset = new Vector2(-0.5f, 0f);
-	private Vector2 leftOverlapBox = new Vector2(0.02f, 1.2f);
-	private Vector2 rightOffset = new Vector2(0.5f, 0f);
-	private Vector2 rightOverlapBox = new Vector2(0.02f, 1.2f);
+	private Vector2 bottomOverlapBox = new Vector2(0.6f, 0.02f);
+	private Vector2 leftOffset = new Vector2(-0.375f, 0f);
+	private Vector2 leftOverlapBox = new Vector2(0.02f, 1.95f);
+	private Vector2 rightOffset = new Vector2(0.375f, 0f);
+	private Vector2 rightOverlapBox = new Vector2(0.02f, 1.95f);
 
 	[Header("Events")]
 	[Space]
@@ -39,6 +39,7 @@ public class Collision : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+		// TODO: Rewrite this using Collider.cast 
 		bool wasGrounded = onGround;
 		
 		// Check for ground collision
@@ -62,8 +63,8 @@ public class Collision : MonoBehaviour
 	{
 		Gizmos.color = Color.red;
 
-		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(0.9f, 0.05f, 0.0f));
-		Gizmos.DrawWireCube(transform.position + (Vector3)leftOffset, new Vector3(0.05f, 1.2f, 0.0f));
-		Gizmos.DrawWireCube(transform.position + (Vector3)rightOffset, new Vector3(0.05f, 1.2f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)bottomOffset, new Vector3(0.75f, 0.05f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)leftOffset, new Vector3(0.05f, 1.95f, 0.0f));
+		Gizmos.DrawWireCube(transform.position + (Vector3)rightOffset, new Vector3(0.05f, 1.95f, 0.0f));
 	}
 }
