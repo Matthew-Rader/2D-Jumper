@@ -2,37 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof (BoxCollider2D))]
-public class Controller2D : MonoBehaviour
+public class Controller2D :	RaycastController
 {
-	public LayerMask collisionMask;
-
-	const float skinWidth = 0.015f;
-
-	// The amount of rays that shot out from the sides of the player
-	public int horizontalRayCount = 4;
-
-	// The amount of rays that shot out from the top and bottom of the player
-	public int verticalRayCount = 4;
-
-	// The relative spacing of all the rays being shot out from the player
-	float horizontalRaySpacing;
-	float verticalRaySpacing;
-
 	float maxClimbAngle = 50f;
 	float maxDescendAngle = 75f; 
 
-	BoxCollider2D collider;
-	RaycastOrigins raycastOrigins;
 	public CollisionInfo collInfo;
 
-    void Start()
-    {
-		collider = GetComponent<BoxCollider2D>();
-		CalculateRaySpacing();
+	public override void Start()
+	{
+		// This runs the start method within the RaycastController
+		base.Start();
 	}
 
-	public void Move(Vector3 velocity)
+	public void Move(Vector3 velocity, bool standingOnPlatform = false)
 	{
 		UpdateRaycastOrigins();
 		collInfo.Reset();
@@ -48,6 +31,9 @@ public class Controller2D : MonoBehaviour
 			VerticalCollisions(ref velocity);
 
 		transform.Translate(velocity);
+
+		if (standingOnPlatform)
+			collInfo.below = true;
 	}
 
 	void HorizontalCollisions(ref Vector3 velocity)
@@ -65,6 +51,12 @@ public class Controller2D : MonoBehaviour
 
 			if (hit)
 			{
+				// If the character is inside another collider
+				if (hit.distance == 0)
+				{
+					continue;
+				}
+
 				float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 
 				if (i == 0 && slopeAngle <= maxClimbAngle)
@@ -197,35 +189,6 @@ public class Controller2D : MonoBehaviour
 
 			}
 		}
-	}
-
-	void UpdateRaycastOrigins()
-	{
-		Bounds bounds = collider.bounds;
-		bounds.Expand(skinWidth * -2);
-
-		raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-		raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-		raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-		raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-	}
-
-	void CalculateRaySpacing()
-	{
-		Bounds bounds = collider.bounds;
-		bounds.Expand(skinWidth * -2);
-
-		horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-		verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
-
-		horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-		verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-	}
-
-	struct RaycastOrigins
-	{
-		public Vector2 topLeft, topRight;
-		public Vector2 bottomLeft, bottomRight;
 	}
 
 	public struct CollisionInfo
