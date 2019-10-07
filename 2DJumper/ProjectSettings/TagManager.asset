@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Spike
   - Transition
+  - Passable Platform
   layers:
   - Default
   - TransparentFX

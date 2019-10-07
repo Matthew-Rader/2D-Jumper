@@ -8,6 +8,7 @@ public class Controller2D :	RaycastController
 	float maxDescendAngle = 75f; 
 
 	public CollisionInfo collInfo;
+	Vector2 playerInput;
 
 	public override void Start()
 	{
@@ -17,8 +18,14 @@ public class Controller2D :	RaycastController
 		collInfo.movementDirection = 1;
 	}
 
-	public void Move(Vector3 velocity, bool standingOnPlatform = false)
+	public void Move (Vector3 velocity, bool standingOnPlatform) {
+		Move(velocity, Vector2.zero, standingOnPlatform);
+	}
+
+	public void Move(Vector3 velocity, Vector2 input, bool standingOnPlatform = false)
 	{
+		playerInput = input;
+
 		UpdateRaycastOrigins();
 		collInfo.Reset();
 		collInfo.velocityOld = velocity;
@@ -120,6 +127,12 @@ public class Controller2D :	RaycastController
 
 			if (hit)
 			{
+				if (hit.collider.tag == "Passable Platform") {
+					if (directionY == 1 || hit.distance == 0 || (playerInput.y == -1 && playerInput.x == 0)) {
+						continue;
+					}
+				}
+
 				velocity.y = (hit.distance - skinWidth) * directionY;
 				rayLength = hit.distance;
 

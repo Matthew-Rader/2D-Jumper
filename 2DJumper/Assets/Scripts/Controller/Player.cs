@@ -20,7 +20,8 @@ public class Player : MonoBehaviour {
 	[SerializeField] private float accelerationTimeGrounded = 0.1f;
 
 	[Header("Jump Parameters")]
-	[SerializeField] private float jumpHeight = 4.0f;
+	[SerializeField] private float maxJumpHeight = 4.0f;
+	[SerializeField] private float minJumpHeight = 4.0f;
 	[SerializeField] private float timeToJumpApex = 0.4f;
 	[SerializeField] private Vector2 wallJumpAway;
 	[SerializeField] private Vector2 wallJumpClimb;
@@ -38,7 +39,8 @@ public class Player : MonoBehaviour {
 
 	// PRIVATE VARIABLES
 	private float moveX, moveY;
-	private float jumpVelocity;
+	private float maxJumpVelocity;
+	private float minJumpVelocity;
 	private float gravity;
 	private Vector3 velocity;
 	private float velocitySmoothing;
@@ -51,8 +53,9 @@ public class Player : MonoBehaviour {
 	void Start() {
 		controller = GetComponent<Controller2D>();
 
-		gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-		jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+		gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+		minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
     }
 
     void Update() {
@@ -66,6 +69,12 @@ public class Player : MonoBehaviour {
 		if (Input.GetButtonDown("Jump"))
 			HandleJump();
 
+		if (Input.GetButtonUp("Jump")) {
+			if (velocity.y > minJumpVelocity) {
+				velocity.y = minJumpVelocity;
+			}
+		}
+
 		HandleWallGrab();
 
 		if (grabWall && !wallGrabDepleted) {
@@ -78,13 +87,13 @@ public class Player : MonoBehaviour {
 			velocity.y += gravity * Time.deltaTime;
 
 			float targetVelocityX = moveX * moveSpeed;
-			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+			velocity.x = targetVelocityX;//Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+				//(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 
 			HandleWallSliding();
 		}
 
-		controller.Move(velocity * Time.deltaTime);
+		controller.Move(velocity * Time.deltaTime, new Vector2(moveX, moveY));
 
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;
 	}
@@ -96,8 +105,11 @@ public class Player : MonoBehaviour {
 			moveX = moveY = 0;
 		}
 		else {
-			moveX = (input.x > 0) ? 1 : -1;
-			moveY = (input.y > 0) ? 1 : -1;
+			if (input.x != 0)
+				moveX = (input.x > 0) ? 1 : -1;
+
+			if (input.y != 0)
+				moveY = (input.y > 0) ? 1 : -1;
 		}
 	}
 
@@ -118,7 +130,7 @@ public class Player : MonoBehaviour {
 	void HandleJump() {
 		// Standrad Jump
 		if (controller.collInfo.below) {
-			velocity.y = jumpVelocity;
+			velocity.y = maxJumpVelocity;
 		}
 		// Some sort of wall jump
 		else if ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below) {
