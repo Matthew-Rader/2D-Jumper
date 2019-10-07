@@ -221,11 +221,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e0855721828e545af094fb5eb00138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
+  moveSpeed: 10
+  controllerDeadZone: 0.25
+  accelerationTimeAirborne: 0.1
+  accelerationTimeGrounded: 0.05
   jumpHeight: 4
-  timeToJumpApex: 0.4
-  moveSpeed: 6
-  accelerationTimeAirborne: 0.2
-  accelerationTimeGrounded: 0.1
+  timeToJumpApex: 0.5
+  wallJumpAway: {x: 15, y: 15}
+  wallJumpClimb: {x: 0, y: 0}
+  wallJumpUp: 15
+  wallJumpAwayControlDelay: 0.15
+  wallSlideSpeed: 1.5
+  wallClimbSpeed: 3.5
+  wallGrabStaminaMax: 5
+  wallStickTimeDelay: 0.15
 --- !u!114 &108333589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -524,7 +534,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   localWaypoints:
-  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: -1.53, z: 0}
   - {x: 0, y: 3.5, z: 0}
   - {x: 5.21, y: 3.5, z: 0}
   speed: 2
