@@ -87,8 +87,8 @@ public class Player : MonoBehaviour {
 			velocity.y += gravity * Time.deltaTime;
 
 			float targetVelocityX = moveX * moveSpeed;
-			velocity.x = targetVelocityX;//Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-				//(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 
 			HandleWallSliding();
 		}
@@ -99,18 +99,9 @@ public class Player : MonoBehaviour {
 	}
 
 	private void GetMovementInput() {
-		Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-		if (input.magnitude < controllerDeadZone) {
-			moveX = moveY = 0;
-		}
-		else {
-			if (input.x != 0)
-				moveX = (input.x > 0) ? 1 : -1;
-
-			if (input.y != 0)
-				moveY = (input.y > 0) ? 1 : -1;
-		}
+		Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+		moveX = input.x;
+		moveY = input.y;
 	}
 
 	void HandleWallSliding() {
