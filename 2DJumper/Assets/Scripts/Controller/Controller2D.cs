@@ -128,7 +128,12 @@ public class Controller2D :	RaycastController
 			if (hit)
 			{
 				if (hit.collider.tag == "Passable Platform") {
-					if (directionY == 1 || hit.distance == 0 || (playerInput.y == -1 && playerInput.x == 0)) {
+					if (directionY == 1 || hit.distance == 0 || collInfo.fallingThroughPlatform) {
+						continue;
+					}
+					if (playerInput.y == -1 && playerInput.x == 0) {
+						collInfo.fallingThroughPlatform = true;
+						Invoke("ResetFallingThroughPlatform", 0.5f);
 						continue;
 					}
 				}
@@ -213,6 +218,10 @@ public class Controller2D :	RaycastController
 		}
 	}
 
+	void ResetFallingThroughPlatform () {
+		collInfo.fallingThroughPlatform = false;
+	}
+
 	public struct CollisionInfo
 	{
 		public bool above, below;
@@ -221,6 +230,7 @@ public class Controller2D :	RaycastController
 		public bool climbingSlope, descendingSlope;
 		public float slopeAngle, slopeAngleOld;
 		public Vector3 velocityOld;
+		public bool fallingThroughPlatform;
 
 		public int movementDirection;
 

@@ -63,9 +63,6 @@ public class Player : MonoBehaviour {
 
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
 
-		if (controller.collInfo.above || controller.collInfo.below)
-			velocity.y = 0;
-
 		if (Input.GetButtonDown("Jump"))
 			HandleJump();
 
@@ -95,6 +92,10 @@ public class Player : MonoBehaviour {
 
 		controller.Move(velocity * Time.deltaTime, new Vector2(moveX, moveY));
 
+		if (controller.collInfo.above || controller.collInfo.below)
+			velocity.y = 0;
+
+		// TODO: Remove once animations are made.
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;
 	}
 
