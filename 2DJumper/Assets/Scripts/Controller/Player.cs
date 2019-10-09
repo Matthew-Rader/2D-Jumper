@@ -6,6 +6,8 @@ using UnityEngine;
  * TODO:
  * - There is a stange bug that occurs sometimes when grabbing a wall the player will instanly 
  *   turn to the opposite direction when letting go.
+ * - When detecting collision with spikes (if I even need to do this) detect a hit only with
+ *   hit.distance == 0.
  */
 
 [RequireComponent (typeof (Controller2D))]
@@ -14,26 +16,26 @@ public class Player : MonoBehaviour {
 	[SerializeField] private GameManager gameManager;
 
 	[Header("Movement")]
-	[SerializeField] private float moveSpeed = 6.0f;
-	[SerializeField] private float controllerDeadZone = 0.25f;
+	[SerializeField] private float moveSpeed = 8.5f;
 	[SerializeField] private float accelerationTimeAirborne = 0.1f;
-	[SerializeField] private float accelerationTimeGrounded = 0.1f;
+	[SerializeField] private float accelerationTimeGrounded = 0.05f;
 
 	[Header("Jump Parameters")]
-	[SerializeField] private float maxJumpHeight = 4.0f;
-	[SerializeField] private float minJumpHeight = 4.0f;
-	[SerializeField] private float timeToJumpApex = 0.4f;
-	[SerializeField] private Vector2 wallJumpAway;
+	[SerializeField] private float maxJumpHeight = 2.25f;
+	[SerializeField] private float minJumpHeight = 1.0f;
+	[SerializeField] private float timeToJumpApex = 0.25f;
+	[SerializeField] private Vector2 wallJumpAway = new Vector2(15, 15);
 	[SerializeField] private Vector2 wallJumpClimb;
-	[SerializeField] private float wallJumpUp;
+	[SerializeField] private float wallJumpUp = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
 
 	[Header("Better Jumping Gravity Multiplier")]
+	[SerializeField] private float gravityFallMultiplier = 10;
 
 	[Header("Wall-Slide Parameters")]
-	[SerializeField] private float wallSlideSpeed = 3.0f;
-	[SerializeField] private float wallClimbSpeed = 4.0f;
-	[SerializeField] private float wallGrabStaminaMax = 3.0f;
+	[SerializeField] private float wallSlideSpeed = 1.5f;
+	[SerializeField] private float wallClimbSpeed = 4.5f;
+	[SerializeField] private float wallGrabStaminaMax = 5.0f;
 	private float wallGrabStamina = 0.0f;
 	private bool wallGrabDepleted = false;
 
@@ -49,6 +51,8 @@ public class Player : MonoBehaviour {
 	private bool grabWall = false;
 	private bool canMove = true;
 	private int wallDirX;
+	private bool jumpInputDown;
+	private bool jumpInputUp;
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
@@ -59,14 +63,14 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-		GetMovementInput();
+		GetInput();
 
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
 
-		if (Input.GetButtonDown("Jump"))
+		if (jumpInputDown)
 			HandleJump();
 
-		if (Input.GetButtonUp("Jump")) {
+		if (jumpInputUp) {
 			if (velocity.y > minJumpVelocity) {
 				velocity.y = minJumpVelocity;
 			}
@@ -81,7 +85,10 @@ public class Player : MonoBehaviour {
 			velocity.x = 0;
 		}
 		else {
-			velocity.y += gravity * Time.deltaTime;
+			if (velocity.y < 0)
+				velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
+			else
+				velocity.y += gravity * Time.deltaTime;
 
 			float targetVelocityX = moveX * moveSpeed;
 			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
@@ -99,10 +106,13 @@ public class Player : MonoBehaviour {
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;
 	}
 
-	private void GetMovementInput() {
+	private void GetInput() {
 		Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 		moveX = input.x;
 		moveY = input.y;
+
+		jumpInputDown = (Input.GetButtonDown("Jump")) ? true : false;
+		jumpInputUp = (Input.GetButtonUp("Jump")) ? true : false;
 	}
 
 	void HandleWallSliding() {

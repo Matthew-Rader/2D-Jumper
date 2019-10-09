@@ -7,22 +7,22 @@ public class RaycastController : MonoBehaviour
 {
 	[SerializeField]
 	protected LayerMask collisionMask;
-	[SerializeField]
+
 	protected const float skinWidth = 0.015f;
 
 	// The amount of rays that shot out from the sides of the player
-	[SerializeField]
-	protected int horizontalRayCount = 4;
+	protected int horizontalRayCount;
 
 	// The amount of rays that shot out from the top and bottom of the player
-	[SerializeField]
-	protected int verticalRayCount = 4;
+	protected int verticalRayCount;
 
 	// The relative spacing of all the rays being shot out from the player
 	[HideInInspector]
 	protected float horizontalRaySpacing;
 	[HideInInspector]
 	protected float verticalRaySpacing;
+
+	const float distanceBetweenRays = 0.25f;
 
 	[HideInInspector]
 	protected BoxCollider2D collider;
@@ -51,8 +51,11 @@ public class RaycastController : MonoBehaviour
 		Bounds bounds = collider.bounds;
 		bounds.Expand(skinWidth * -2);
 
-		horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-		verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
+		float boundsWidth = bounds.size.x;
+		float boundsHeight = bounds.size.y;
+
+		horizontalRayCount = Mathf.RoundToInt(boundsHeight  /distanceBetweenRays);
+		verticalRayCount = Mathf.RoundToInt(boundsWidth / distanceBetweenRays);
 
 		horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
 		verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);

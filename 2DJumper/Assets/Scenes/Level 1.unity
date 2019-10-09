@@ -222,19 +222,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  moveSpeed: 10
-  controllerDeadZone: 0.25
+  moveSpeed: 8.5
   accelerationTimeAirborne: 0.1
-  accelerationTimeGrounded: 0
-  maxJumpHeight: 4
+  accelerationTimeGrounded: 0.05
+  maxJumpHeight: 2.5
   minJumpHeight: 1
-  timeToJumpApex: 0.5
-  wallJumpAway: {x: 15, y: 15}
+  timeToJumpApex: 0.25
+  wallJumpAway: {x: 16, y: 17.5}
   wallJumpClimb: {x: 0, y: 0}
   wallJumpUp: 15
   wallJumpAwayControlDelay: 0.15
+  gravityFallMultiplier: 10
+  gravityUpMultiplier: 0
   wallSlideSpeed: 1.5
-  wallClimbSpeed: 3.5
+  wallClimbSpeed: 4.5
   wallGrabStaminaMax: 5
 --- !u!114 &108333589
 MonoBehaviour:
@@ -251,8 +252,6 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 16385
-  horizontalRayCount: 4
-  verticalRayCount: 4
 --- !u!61 &108333590
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -528,8 +527,6 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
-  horizontalRayCount: 4
-  verticalRayCount: 4
   passengerMask:
     serializedVersion: 2
     m_Bits: 512
