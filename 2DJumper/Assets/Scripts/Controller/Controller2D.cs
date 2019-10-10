@@ -5,7 +5,8 @@ using UnityEngine;
 public class Controller2D :	RaycastController
 {
 	float maxClimbAngle = 50f;
-	float maxDescendAngle = 75f; 
+	float maxDescendAngle = 75f;
+	bool grounded;
 
 	public CollisionInfo collInfo;
 	Vector2 playerInput;
@@ -38,16 +39,17 @@ public class Controller2D :	RaycastController
 
 		HorizontalCollisions(ref movementDistance);
 
-		if (movementDistance.y != 0)
+		//if (movementDistance.y != 0)
 			VerticalCollisions(ref movementDistance);
 
 		transform.Translate(movementDistance);
 
-		if (standingOnPlatform)
+		if (standingOnPlatform) {
 			collInfo.below = true;
+		}
 	}
 
-	void HorizontalCollisions(ref Vector2 movementDistance)
+	void HorizontalCollisions (ref Vector2 movementDistance)
 	{
 		float directionX = collInfo.movementDirection;
 		float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
@@ -112,15 +114,24 @@ public class Controller2D :	RaycastController
 		}
 	}
 
-	void VerticalCollisions(ref Vector2 movementDistance)
+	void VerticalCollisions (ref Vector2 movementDistance)
 	{
 		float directionY = Mathf.Sign(movementDistance.y);
 		float rayLength = Mathf.Abs(movementDistance.y) + skinWidth;
+
+		if (Mathf.Abs(movementDistance.y) < skinWidth) {
+			rayLength = 2 * skinWidth;
+		}
+
+		float movementAmountY = 0.0f;
+		bool rayHit = false;
+		collInfo.grounded = false;
 
 		for (int i = 0; i < verticalRayCount; ++i)
 		{
 			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + movementDistance.x);
+
 			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
 
 			Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
@@ -138,17 +149,29 @@ public class Controller2D :	RaycastController
 					}
 				}
 
-				movementDistance.y = (hit.distance - skinWidth) * directionY;
+				collInfo.above = directionY == 1;
+				collInfo.below = directionY == -1;
+				collInfo.grounded = true;
+
+				movementAmountY = (hit.distance - skinWidth) * directionY;
+				//movementDistance.y = (hit.distance - skinWidth) * directionY;
+
 				rayLength = hit.distance;
 
-				if (collInfo.climbingSlope)
-				{
+				if (collInfo.climbingSlope) {
 					movementDistance.x = movementDistance.y / Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(movementDistance.x);
 				}
 
-				collInfo.above = directionY == 1;
-				collInfo.below = directionY == -1;
+				rayHit = true;
 			}
+		}
+
+		// If the ground was not detected then check if we are near a ledge.
+		if (!rayHit) {
+			LedgeDetection(ref movementDistance);
+		}
+		else {
+			movementDistance.y = movementAmountY;
 		}
 
 		if (collInfo.climbingSlope)
@@ -171,7 +194,7 @@ public class Controller2D :	RaycastController
 		}
 	}
 
-	void ClimbSlope(ref Vector2 movementDistance, float slopeAngle)
+	void ClimbSlope (ref Vector2 movementDistance, float slopeAngle)
 	{
 		float moveDistance = Mathf.Abs(movementDistance.x);
 		float climbmovementDistanceY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
@@ -186,7 +209,7 @@ public class Controller2D :	RaycastController
 		}
 	}
 
-	void DescendSlope(ref Vector2 movementDistance)
+	void DescendSlope (ref Vector2 movementDistance)
 	{
 		float directionX = Mathf.Sign(movementDistance.x);
 		Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
@@ -218,6 +241,32 @@ public class Controller2D :	RaycastController
 		}
 	}
 
+	void LedgeDetection (ref Vector2 movementDistance) {
+		collInfo.grounded = false;
+		if (!(movementDistance.y > 0) && !collInfo.left && !collInfo.right) {
+			float directionX = Mathf.Sign(movementDistance.x);
+			float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
+
+			for (int i = 0; i < 2; ++i) {
+				Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+				if (directionX > 0)
+					rayOrigin -= Vector2.right * ((verticalRaySpacing * 0.5f) * (i+1) + movementDistance.x);
+				else
+					rayOrigin += Vector2.right * ((verticalRaySpacing * 0.5f) * (i+1) + movementDistance.x);
+
+				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * -1, rayLength, collisionMask);
+
+				Debug.DrawRay(rayOrigin, Vector2.up * directionX * 2, Color.blue);
+
+				if (hit) {
+					movementDistance.y = 0;
+					collInfo.below = true;
+					collInfo.grounded = true;
+				}
+			}
+		}
+	}
+
 	void ResetFallingThroughPlatform () {
 		collInfo.fallingThroughPlatform = false;
 	}
@@ -233,6 +282,7 @@ public class Controller2D :	RaycastController
 		public bool fallingThroughPlatform;
 
 		public int movementDirection;
+		public bool grounded;
 
 		public void Reset()
 		{

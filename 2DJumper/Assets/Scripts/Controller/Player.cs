@@ -53,6 +53,7 @@ public class Player : MonoBehaviour {
 	private int wallDirX;
 	private bool jumpInputDown;
 	private bool jumpInputUp;
+	private bool jumping;
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
@@ -87,8 +88,12 @@ public class Player : MonoBehaviour {
 		else {
 			if (velocity.y < 0)
 				velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
-			else
+			else if (jumping || !controller.collInfo.grounded) {
 				velocity.y += gravity * Time.deltaTime;
+			}
+			else if (controller.collInfo.grounded) {
+				velocity.y = 0;
+			}
 
 			float targetVelocityX = moveX * moveSpeed;
 			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
@@ -130,17 +135,19 @@ public class Player : MonoBehaviour {
 	}
 
 	void HandleJump() {
+		jumping = false;
 		// Standrad Jump
 		if (controller.collInfo.below) {
 			velocity.y = maxJumpVelocity;
+			jumping = true;
 		}
 		// Some sort of wall jump
 		else if ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below) {
 			// Jump vertically up wall
 			if (grabWall && (moveX == 0 || (moveX < 0f && controller.collInfo.left) || (moveX > 0f && controller.collInfo.right))) {
-				Debug.Log(moveX);
 				velocity.x = 0;
 				velocity.y = wallJumpUp;
+				jumping = true;
 			}
 			else {
 				StopCoroutine(DisableMovementWallJumpOff(0));
@@ -148,6 +155,7 @@ public class Player : MonoBehaviour {
 
 				velocity.x = -wallDirX * wallJumpAway.x;
 				velocity.y = wallJumpAway.y;
+				jumping = true;
 			}
 		}
 	}
