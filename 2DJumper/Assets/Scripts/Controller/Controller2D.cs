@@ -125,7 +125,6 @@ public class Controller2D :	RaycastController
 
 		float movementAmountY = 0.0f;
 		bool rayHit = false;
-		collInfo.grounded = false;
 
 		for (int i = 0; i < verticalRayCount; ++i)
 		{
@@ -152,6 +151,7 @@ public class Controller2D :	RaycastController
 				collInfo.above = directionY == 1;
 				collInfo.below = directionY == -1;
 				collInfo.grounded = true;
+				collInfo.onEdge = (i == 0 || i == verticalRayCount - 1);
 
 				movementAmountY = (hit.distance - skinWidth) * directionY;
 				//movementDistance.y = (hit.distance - skinWidth) * directionY;
@@ -242,17 +242,16 @@ public class Controller2D :	RaycastController
 	}
 
 	void LedgeDetection (ref Vector2 movementDistance) {
-		collInfo.grounded = false;
 		if (!(movementDistance.y > 0) && !collInfo.left && !collInfo.right) {
 			float directionX = Mathf.Sign(movementDistance.x);
 			float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
 
-			for (int i = 0; i < 2; ++i) {
+			//for (int i = 1; i <= 2; ++i) {
 				Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
 				if (directionX > 0)
-					rayOrigin -= Vector2.right * ((verticalRaySpacing * 0.5f) * (i+1) + movementDistance.x);
+					rayOrigin -= Vector2.right * ((verticalRaySpacing * 0.5f) + movementDistance.x);
 				else
-					rayOrigin += Vector2.right * ((verticalRaySpacing * 0.5f) * (i+1) + movementDistance.x);
+					rayOrigin += Vector2.right * ((verticalRaySpacing * 0.5f) + movementDistance.x);
 
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * -1, rayLength, collisionMask);
 
@@ -262,8 +261,9 @@ public class Controller2D :	RaycastController
 					movementDistance.y = 0;
 					collInfo.below = true;
 					collInfo.grounded = true;
+					collInfo.overEdge = true;
 				}
-			}
+			//}
 		}
 	}
 
@@ -284,6 +284,9 @@ public class Controller2D :	RaycastController
 		public int movementDirection;
 		public bool grounded;
 
+		public bool onEdge;
+		public bool overEdge;
+
 		public void Reset()
 		{
 			above = below = false;
@@ -291,6 +294,9 @@ public class Controller2D :	RaycastController
 			climbingSlope = descendingSlope = false;
 			slopeAngleOld = slopeAngle;
 			slopeAngle = 0;
+			onEdge = false;
+			overEdge = false;
+			grounded = false;
 		}
 	}
 }
