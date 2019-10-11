@@ -54,6 +54,9 @@ public class Player : MonoBehaviour {
 	private bool jumpInputDown;
 	private bool jumpInputUp;
 	private bool jumping;
+	private bool onLeftWall, onRightWall;
+	private float timeToWallUnstick;
+	private float wallStickTime = 0.15f;
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
@@ -61,6 +64,8 @@ public class Player : MonoBehaviour {
 		gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
 		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 		minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+
+		jumping = onLeftWall = onRightWall = false;
     }
 
     void Update() {
@@ -100,6 +105,8 @@ public class Player : MonoBehaviour {
 				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 
 			HandleWallSliding();
+
+			HandleWallSlideNavigationDelay();
 		}
 
 		controller.Move(velocity * Time.deltaTime, new Vector2(moveX, moveY));
@@ -131,6 +138,39 @@ public class Player : MonoBehaviour {
 			if (velocity.y < -wallSlideSpeed) {
 				velocity.y = -wallSlideSpeed;
 			}
+
+			if (controller.collInfo.left) {
+				onLeftWall = true;
+				onRightWall = false;
+			}
+			else if (controller.collInfo.right) {
+				onRightWall = true;
+				onLeftWall = false;
+			}
+		}
+	}
+
+	void HandleWallSlideNavigationDelay () {
+		if ((controller.collInfo.right || controller.collInfo.left) && !controller.collInfo.below && velocity.y < 0) {
+			if (timeToWallUnstick > 0) {
+				velocitySmoothing = 0;
+				velocity.x = 0;
+
+				if (moveX != wallDirX && moveX != 0) {
+					timeToWallUnstick -= Time.deltaTime;
+
+					// Wall slide rate needs to be applied so the player doesn't fall at the rate of gravity
+					if (velocity.y < -wallSlideSpeed) {
+						velocity.y = -wallSlideSpeed;
+					}
+				}
+				else {
+					timeToWallUnstick = wallStickTime;
+				}
+			}
+		}
+		else {
+			timeToWallUnstick = wallStickTime;
 		}
 	}
 
