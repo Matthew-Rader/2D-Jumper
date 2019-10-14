@@ -55,17 +55,17 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 
 			if (swapped)
 			{
-				Rigidbody2D playerRigi = col.gameObject.GetComponent<Rigidbody2D>();
+				Player playerController = col.gameObject.GetComponent<Player>();
 				Transform playerTransform = col.gameObject.GetComponent<Transform>();
-				StartCoroutine(DoPlayerTransition(playerRigi, playerTransform, direction));
+				StartCoroutine(DoPlayerTransition(playerController, playerTransform, direction));
 			}
 		}
 	}
 
-	IEnumerator DoPlayerTransition(Rigidbody2D playerRigi, Transform playerTransform, int direction)
+	IEnumerator DoPlayerTransition(Player playerController, Transform playerTransform, int direction)
 	{
 		// Freeze the players physic opperations
-		playerRigi.constraints = RigidbodyConstraints2D.FreezeAll;
+		playerController.enabled = false;
 
 		// Leave the player floating while the virtual cameras start to transition
 		// _coroutinePauseTime = 0.25f
@@ -89,7 +89,6 @@ public class ChangeVirtualCameraPriority : MonoBehaviour
 		}
 
 		// Unfreeze the player's rigidbody
-		playerRigi.constraints = RigidbodyConstraints2D.None;
-		playerRigi.constraints = RigidbodyConstraints2D.FreezeRotation;
+		playerController.enabled = true;
 	}
 }

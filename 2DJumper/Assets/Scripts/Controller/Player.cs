@@ -24,8 +24,8 @@ public class Player : MonoBehaviour {
 	[SerializeField] private float maxJumpHeight = 2.25f;
 	[SerializeField] private float minJumpHeight = 1.0f;
 	[SerializeField] private float timeToJumpApex = 0.25f;
-	[SerializeField] private Vector2 wallJumpAway = new Vector2(15, 15);
-	[SerializeField] private Vector2 wallJumpClimb;
+	[SerializeField] private Vector2 wallJumpAway = new Vector2(16.0f, 17.5f);
+	//[SerializeField] private Vector2 wallJumpClimb;
 	[SerializeField] private float wallJumpUp = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
 
@@ -68,7 +68,7 @@ public class Player : MonoBehaviour {
 		jumping = onLeftWall = onRightWall = false;
     }
 
-    void Update() {
+	void Update () {
 		GetInput();
 
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
