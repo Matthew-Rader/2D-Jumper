@@ -248,13 +248,13 @@ public class Controller2D :	RaycastController
 			//for (int i = 1; i <= 2; ++i) {
 				Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
 				if (directionX > 0)
-					rayOrigin -= Vector2.right * ((verticalRaySpacing * 0.5f) + movementDistance.x);
+					rayOrigin -= Vector2.right * ((verticalRaySpacing * 0.7f) + movementDistance.x);
 				else
-					rayOrigin += Vector2.right * ((verticalRaySpacing * 0.5f) + movementDistance.x);
+					rayOrigin += Vector2.right * ((verticalRaySpacing * 0.7f) + movementDistance.x);
 
 				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * -1, rayLength, collisionMask);
 
-				Debug.DrawRay(rayOrigin, Vector2.up * directionX * 2, Color.blue);
+				Debug.DrawRay(rayOrigin, Vector2.up * -1 * 2, Color.blue);
 
 				if (hit) {
 					movementDistance.y = 0;
