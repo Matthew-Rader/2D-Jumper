@@ -52,7 +52,7 @@ public class Controller2D :	RaycastController
 	void HorizontalCollisions (ref Vector2 movementDistance)
 	{
 		float directionX = collInfo.movementDirection;
-		float hazardCheckRayLength = 2 * skinWidth;
+		float hazardCheckRayLength = Mathf.Abs(movementDistance.x) + skinWidth;//2 * skinWidth;
 		float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
 
 		if (Mathf.Abs(movementDistance.x) < skinWidth)
@@ -128,7 +128,7 @@ public class Controller2D :	RaycastController
 	void VerticalCollisions (ref Vector2 movementDistance)
 	{
 		float directionY = Mathf.Sign(movementDistance.y);
-		float hazardCheckRayLength = 2 * skinWidth;
+		float hazardCheckRayLength = Mathf.Abs(movementDistance.y) + skinWidth;//2 * skinWidth;
 		float terrainCheckRayLength = Mathf.Abs(movementDistance.y) + skinWidth;
 
 		if (Mathf.Abs(movementDistance.y) < skinWidth) {
