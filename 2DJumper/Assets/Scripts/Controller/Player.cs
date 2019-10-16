@@ -118,8 +118,14 @@ public class Player : MonoBehaviour {
 			velocity.y = 0;
 		}
 
-		if (controller.collInfo.touchedHazard && !controller.collInfo.below)
+		if (controller.collInfo.touchedHazard && !controller.collInfo.below) {
 			deathFade.StartDeathFadeCoroutine();
+		}
+
+		if (controller.collInfo.hitJumpPlatform) {
+			velocity.y = maxJumpVelocity * 1.5f;
+			jumping = true;
+		}
 
 		// TODO: Remove once animations are made.
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;

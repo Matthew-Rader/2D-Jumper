@@ -8,6 +8,7 @@ TagManager:
   - Transition
   - Passable Platform
   - Hazard
+  - JumpPlatform
   layers:
   - Default
   - TransparentFX

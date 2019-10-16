@@ -172,6 +172,10 @@ public class Controller2D :	RaycastController
 					}
 				}
 
+				if (terrainHit.collider.tag == "JumpPlatform") {
+					collInfo.hitJumpPlatform = true;
+				}
+
 				collInfo.above = directionY == 1;
 				collInfo.below = directionY == -1;
 				collInfo.grounded = true;
@@ -314,6 +318,8 @@ public class Controller2D :	RaycastController
 
 		public bool touchedHazard;
 
+		public bool hitJumpPlatform;
+
 		public void Reset()
 		{
 			above = below = false;
@@ -325,6 +331,7 @@ public class Controller2D :	RaycastController
 			overEdge = false;
 			grounded = false;
 			touchedHazard = false;
+			hitJumpPlatform = false;
 		}
 	}
 }
