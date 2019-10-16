@@ -44,10 +44,11 @@ public class Player : MonoBehaviour {
 	private float maxJumpVelocity;
 	private float minJumpVelocity;
 	private float gravity;
-	private Vector3 velocity;
+	private Vector2 velocity;
 	private float velocitySmoothing;
 	private bool wallSliding;
 	private Controller2D controller;
+	private DeathFade deathFade;
 	private bool grabWall = false;
 	private bool canMove = true;
 	private int wallDirX;
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour {
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
+		deathFade = GetComponent<DeathFade>();
 
 		gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
 		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
@@ -91,8 +93,9 @@ public class Player : MonoBehaviour {
 			velocity.x = 0;
 		}
 		else {
-			if (velocity.y < 0)
+			if (velocity.y < 0) {
 				velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
+			}
 			else if (jumping || !controller.collInfo.grounded) {
 				velocity.y += gravity * Time.deltaTime;
 			}
@@ -113,6 +116,9 @@ public class Player : MonoBehaviour {
 
 		if (controller.collInfo.above || controller.collInfo.below)
 			velocity.y = 0;
+
+		if (controller.collInfo.touchedHazard)
+			deathFade.StartDeathFadeCoroutine();
 
 		// TODO: Remove once animations are made.
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;
@@ -229,5 +235,11 @@ public class Player : MonoBehaviour {
 		canMove = false;
 		yield return new WaitForSeconds(time);
 		canMove = true;
+	}
+
+	void ResetPlayer () {
+		jumping = onLeftWall = onRightWall = false;
+		controller.collInfo.below = false;
+		velocity = Vector2.zero;
 	}
 }

@@ -7,6 +7,7 @@ TagManager:
   - Spike
   - Transition
   - Passable Platform
+  - Hazard
   layers:
   - Default
   - TransparentFX

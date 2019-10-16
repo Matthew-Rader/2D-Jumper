@@ -68,6 +68,12 @@ public class Controller2D :	RaycastController
 
 			if (hit)
 			{
+				// If the player has hit a hazard
+				if (hit.collider.tag == "Hazard") {
+					collInfo.touchedHazard = true;
+					continue;
+				}
+
 				// If the character is inside another collider
 				if (hit.distance == 0)
 				{
@@ -123,6 +129,7 @@ public class Controller2D :	RaycastController
 		}
 
 		float movementAmountY = 0.0f;
+		float movementAmountX = movementDistance.x;
 		bool rayHit = false;
 
 		for (int i = 0; i < verticalRayCount; ++i)
@@ -136,15 +143,23 @@ public class Controller2D :	RaycastController
 
 			if (hit)
 			{
+				// Check for passable platforms
 				if (hit.collider.tag == "Passable Platform") {
 					if (directionY == 1 || hit.distance == 0 || collInfo.fallingThroughPlatform) {
 						continue;
 					}
+
 					if (playerInput.y == -1 && playerInput.x == 0) {
 						collInfo.fallingThroughPlatform = true;
 						Invoke("ResetFallingThroughPlatform", 0.5f);
 						continue;
 					}
+				}
+
+				// Check to see if the player has hit a hazard
+				if (hit.collider.tag == "Hazard") {
+					collInfo.touchedHazard = true;
+					continue;
 				}
 
 				collInfo.above = directionY == 1;
@@ -158,7 +173,7 @@ public class Controller2D :	RaycastController
 				rayLength = hit.distance;
 
 				if (collInfo.climbingSlope) {
-					movementDistance.x = movementDistance.y / Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(movementDistance.x);
+					movementAmountX = movementAmountY / Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(movementAmountX);
 				}
 
 				rayHit = true;
@@ -166,11 +181,13 @@ public class Controller2D :	RaycastController
 		}
 
 		// If the ground was not detected then check if we are near a ledge.
-		if (!rayHit) {
+		if (!rayHit && !collInfo.touchedHazard) {
 			LedgeDetection(ref movementDistance);
+			movementDistance.x = movementAmountX;
 		}
 		else {
 			movementDistance.y = movementAmountY;
+			movementDistance.x = movementAmountX;
 		}
 
 		if (collInfo.climbingSlope)
@@ -286,6 +303,8 @@ public class Controller2D :	RaycastController
 		public bool onEdge;
 		public bool overEdge;
 
+		public bool touchedHazard;
+
 		public void Reset()
 		{
 			above = below = false;
@@ -296,6 +315,7 @@ public class Controller2D :	RaycastController
 			onEdge = false;
 			overEdge = false;
 			grounded = false;
+			touchedHazard = false;
 		}
 	}
 }
