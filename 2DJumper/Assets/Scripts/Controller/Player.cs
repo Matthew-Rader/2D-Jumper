@@ -114,10 +114,11 @@ public class Player : MonoBehaviour {
 
 		controller.Move(velocity * Time.deltaTime, new Vector2(moveX, moveY));
 
-		if (controller.collInfo.above || controller.collInfo.below)
+		if (controller.collInfo.above || controller.collInfo.below) {
 			velocity.y = 0;
+		}
 
-		if (controller.collInfo.touchedHazard)
+		if (controller.collInfo.touchedHazard && !controller.collInfo.below)
 			deathFade.StartDeathFadeCoroutine();
 
 		// TODO: Remove once animations are made.
@@ -237,7 +238,7 @@ public class Player : MonoBehaviour {
 		canMove = true;
 	}
 
-	void ResetPlayer () {
+	public void ResetPlayer () {
 		jumping = onLeftWall = onRightWall = false;
 		controller.collInfo.below = false;
 		velocity = Vector2.zero;

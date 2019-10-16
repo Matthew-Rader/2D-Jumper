@@ -26,12 +26,19 @@ public class DeathFade : MonoBehaviour
 	{
 		fadeAnim.SetTrigger("FadeOut");
 
+		// Reset player movement information
+		transform.GetComponent<Player>().ResetPlayer();
+
 		// Freeze the player
 		transform.GetComponent<Player>().enabled = false;
 
 		yield return new WaitForSeconds(0.75f);
 
 		transform.position = gameManager.currentReSpawnPoint.transform.position;
+
+		// TODO: Remove once animations are made.
+		int playerOrientation = gameManager.currentReSpawnPoint.GetComponent<SpawnPointInformation>().spwnOrien; 
+		GetComponent<SpriteRenderer>().flipX = (playerOrientation == 1) ? false : true;
 
 		// Unfreeze the player
 		transform.GetComponent<Player>().enabled = true;

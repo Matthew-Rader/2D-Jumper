@@ -4,10 +4,19 @@ using UnityEngine;
 
 public class SpawnPointInformation : MonoBehaviour
 {
-	public enum orientation {
+	[SerializeField] private enum orientation {
 		Left,
 		Right
 	};
 
-	public orientation spawnOrientation;
+	[SerializeField] private orientation spawnOrientation = orientation.Left;
+
+	//  1 == RIGHT
+	// -1 == LEFT
+	[HideInInspector]
+	public int spwnOrien;
+
+	void Start () {
+		spwnOrien = (spawnOrientation == orientation.Left) ? -1 : 1;
+	}
 }

@@ -8,6 +8,7 @@ public class Controller2D :	RaycastController
 	float maxDescendAngle = 75f;
 	bool grounded;
 
+	[SerializeField] private LayerMask hazardCollisionMask;
 	public CollisionInfo collInfo;
 	Vector2 playerInput;
 
@@ -51,6 +52,7 @@ public class Controller2D :	RaycastController
 	void HorizontalCollisions (ref Vector2 movementDistance)
 	{
 		float directionX = collInfo.movementDirection;
+		float hazardCheckRayLength = 2 * skinWidth;
 		float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
 
 		if (Mathf.Abs(movementDistance.x) < skinWidth)
@@ -62,25 +64,29 @@ public class Controller2D :	RaycastController
 		{
 			Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
 			rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+			RaycastHit2D terrainHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+			RaycastHit2D hazardHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, hazardCheckRayLength, hazardCollisionMask);
 
 			Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
 
-			if (hit)
-			{
-				// If the player has hit a hazard
-				if (hit.collider.tag == "Hazard") {
-					collInfo.touchedHazard = true;
-					continue;
-				}
+			if (hazardHit) {
+				//Debug.Log("in hazard");
+				collInfo.touchedHazard = true;
+				movementDistance = Vector2.zero;
 
+				// The player has already hit a spike there is no point in continuing
+				//return;
+			}
+
+			if (terrainHit)
+			{
 				// If the character is inside another collider
-				if (hit.distance == 0)
+				if (terrainHit.distance == 0)
 				{
 					continue;
 				}
 
-				float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+				float slopeAngle = Vector2.Angle(terrainHit.normal, Vector2.up);
 
 				if (i == 0 && slopeAngle <= maxClimbAngle)
 				{
@@ -93,7 +99,7 @@ public class Controller2D :	RaycastController
 					float distanceToSlopeStart = 0;
 					if (slopeAngle != collInfo.slopeAngleOld)
 					{
-						distanceToSlopeStart = hit.distance - skinWidth;
+						distanceToSlopeStart = terrainHit.distance - skinWidth;
 						movementDistance.x -= distanceToSlopeStart * directionX;
 					}
 
@@ -104,8 +110,8 @@ public class Controller2D :	RaycastController
 
 				if (!collInfo.climbingSlope || slopeAngle > maxClimbAngle)
 				{
-					movementDistance.x = Mathf.Min(Mathf.Abs(movementDistance.x), (hit.distance - skinWidth)) * directionX;
-					rayLength = Mathf.Min(Mathf.Abs(movementDistance.x) + skinWidth, hit.distance);
+					movementDistance.x = Mathf.Min(Mathf.Abs(movementDistance.x), (terrainHit.distance - skinWidth)) * directionX;
+					rayLength = Mathf.Min(Mathf.Abs(movementDistance.x) + skinWidth, terrainHit.distance);
 
 					if (collInfo.climbingSlope)
 					{
@@ -122,10 +128,11 @@ public class Controller2D :	RaycastController
 	void VerticalCollisions (ref Vector2 movementDistance)
 	{
 		float directionY = Mathf.Sign(movementDistance.y);
-		float rayLength = Mathf.Abs(movementDistance.y) + skinWidth;
+		float hazardCheckRayLength = 2 * skinWidth;
+		float terrainCheckRayLength = Mathf.Abs(movementDistance.y) + skinWidth;
 
 		if (Mathf.Abs(movementDistance.y) < skinWidth) {
-			rayLength = 2 * skinWidth;
+			terrainCheckRayLength = 2 * skinWidth;
 		}
 
 		float movementAmountY = 0.0f;
@@ -137,15 +144,24 @@ public class Controller2D :	RaycastController
 			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + movementDistance.x);
 
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+			RaycastHit2D terrainHit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, terrainCheckRayLength, collisionMask);
+			RaycastHit2D hazardHit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, hazardCheckRayLength, hazardCollisionMask);
 
-			Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+			Debug.DrawRay(rayOrigin, Vector2.up * directionY * terrainCheckRayLength, Color.red);
 
-			if (hit)
+			if (hazardHit) {
+				collInfo.touchedHazard = true;
+				movementDistance = Vector2.zero;
+
+				// The player has already hit a spike there is no point in continuing
+				//return;
+			}
+
+			if (terrainHit)
 			{
 				// Check for passable platforms
-				if (hit.collider.tag == "Passable Platform") {
-					if (directionY == 1 || hit.distance == 0 || collInfo.fallingThroughPlatform) {
+				if (terrainHit.collider.tag == "Passable Platform") {
+					if (directionY == 1 || terrainHit.distance == 0 || collInfo.fallingThroughPlatform) {
 						continue;
 					}
 
@@ -156,21 +172,14 @@ public class Controller2D :	RaycastController
 					}
 				}
 
-				// Check to see if the player has hit a hazard
-				if (hit.collider.tag == "Hazard") {
-					collInfo.touchedHazard = true;
-					continue;
-				}
-
 				collInfo.above = directionY == 1;
 				collInfo.below = directionY == -1;
 				collInfo.grounded = true;
-				collInfo.onEdge = (i == 0 || i == verticalRayCount - 1);
 
-				movementAmountY = (hit.distance - skinWidth) * directionY;
+				movementAmountY = (terrainHit.distance - skinWidth) * directionY;
 				//movementDistance.y = (hit.distance - skinWidth) * directionY;
 
-				rayLength = hit.distance;
+				terrainCheckRayLength = terrainHit.distance;
 
 				if (collInfo.climbingSlope) {
 					movementAmountX = movementAmountY / Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(movementAmountX);
@@ -193,9 +202,9 @@ public class Controller2D :	RaycastController
 		if (collInfo.climbingSlope)
 		{
 			float directionX = Mathf.Sign(movementDistance.x);
-			rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
+			terrainCheckRayLength = Mathf.Abs(movementDistance.x) + skinWidth;
 			Vector2 rayOrigin = ((directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight) + Vector2.up * movementDistance.y;
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, terrainCheckRayLength, collisionMask);
 
 			if (hit)
 			{
