@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 /* 
  * TODO:
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour {
 	private bool wallSliding;
 	private Controller2D controller;
 	private DeathFade deathFade;
+	private CameraEffects camEffects;
 	private bool grabWall = false;
 	private bool canMove = true;
 	private int wallDirX;
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour {
 	void Start() {
 		controller = GetComponent<Controller2D>();
 		deathFade = GetComponent<DeathFade>();
+		camEffects = GetComponent<CameraEffects>();
 
 		gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
 		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
@@ -127,6 +130,7 @@ public class Player : MonoBehaviour {
 		if (controller.collInfo.hitJumpPlatform) {
 			velocity.y = maxJumpVelocity * 1.5f;
 			jumping = true;
+			camEffects.ApplyCameraShake();
 		}
 
 		// TODO: Remove once animations are made.

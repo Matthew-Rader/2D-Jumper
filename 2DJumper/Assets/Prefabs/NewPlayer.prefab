@@ -84,6 +84,7 @@ GameObject:
   - component: {fileID: 1305093374654654084}
   - component: {fileID: 1305093374654654085}
   - component: {fileID: 1305093374695746707}
+  - component: {fileID: 8019129196962434920}
   m_Layer: 9
   m_Name: NewPlayer
   m_TagString: Player
@@ -195,7 +196,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionMask:
     serializedVersion: 2
-    m_Bits: 18433
+    m_Bits: 16385
+  hazardCollisionMask:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!114 &1305093374654654085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,6 +238,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38790bac81cb77d40b3ef025a3f8c9b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeAnim: {fileID: 6336873603215023086, guid: 50b5244b0799aed4095c4f9be11f2a9a,
-    type: 3}
+  fadeAnim: {fileID: 0}
   gameManager: {fileID: 0}
+--- !u!114 &8019129196962434920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305093374654654080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56167ddcbec7584dbbd303b0a37b67a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _CamBrain: {fileID: 0}
+  cameraShakeDuration: 0.15
+  cameraShakeAmount: 2
