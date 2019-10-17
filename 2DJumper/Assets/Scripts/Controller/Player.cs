@@ -68,6 +68,8 @@ public class Player : MonoBehaviour {
 		minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
 		jumping = onLeftWall = onRightWall = false;
+
+		transform.position = gameManager.currentReSpawnPoint.transform.position;
     }
 
 	void Update () {
