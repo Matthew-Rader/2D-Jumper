@@ -156,7 +156,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3a3c1b753aa76054b8350c78f0ebb7a9, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -174,9 +174,9 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -369041747
+  m_SortingLayer: 1
+  m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -540,42 +540,30 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 1506114433}
     m_ColliderPaths:
-    - - X: 529687476
+    - - X: 529999971
         Y: 20000000
-      - X: 530000000
-        Y: 20312512
       - X: 529999971
         Y: 120000000
       - X: 520000000
         Y: 119999971
-      - X: 520000008
-        Y: 20312494
-      - X: 520312524
+      - X: 520000029
         Y: 20000000
     - - X: 529999971
         Y: -110000000
-      - X: 529999992
-        Y: -10312494
-      - X: 529687476
+      - X: 529999971
         Y: -10000000
-      - X: 520312506
-        Y: -10000008
       - X: 520000000
-        Y: -10312512
+        Y: -10000029
       - X: 520000029
         Y: -110000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 53, y: 2.0312512}
-      - {x: 52.999996, y: 12}
+    - - {x: 52.999996, y: 12}
       - {x: 52, y: 11.999997}
-      - {x: 52, y: 2.0312495}
-      - {x: 52.03125, y: 2}
-      - {x: 52.96875, y: 2}
-    - - {x: 53, y: -1.0312494}
-      - {x: 52.96875, y: -1}
-      - {x: 52.03125, y: -1.0000008}
-      - {x: 52, y: -1.0312512}
+      - {x: 52.000004, y: 2}
+      - {x: 52.999996, y: 2}
+    - - {x: 52.999996, y: -1}
+      - {x: 52, y: -1.0000029}
       - {x: 52.000004, y: -11}
       - {x: 52.999996, y: -11}
   m_VertexDistance: 0.0005
@@ -858,7 +846,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3a3c1b753aa76054b8350c78f0ebb7a9, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -876,8 +864,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 579467825
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
