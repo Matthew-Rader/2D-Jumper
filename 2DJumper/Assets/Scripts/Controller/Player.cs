@@ -128,9 +128,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if (controller.collInfo.hitJumpPlatform) {
-			velocity.y = maxJumpVelocity * 1.5f;
-			jumping = true;
-			camEffects.ApplyCameraShake();
+			HandleJumpPlatform();
 		}
 
 		// TODO: Remove once animations are made.
@@ -242,6 +240,12 @@ public class Player : MonoBehaviour {
 		else {
 			grabWall = false;
 		}
+	}
+
+	void HandleJumpPlatform () {
+		velocity.y = maxJumpVelocity * 1.5f;
+		jumping = true;
+		camEffects.ApplyCameraShake();
 	}
 
 	IEnumerator DisableMovementWallJumpOff(float time) {

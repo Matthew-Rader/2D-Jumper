@@ -52,7 +52,6 @@ public class Controller2D :	RaycastController
 	void HorizontalCollisions (ref Vector2 movementDistance)
 	{
 		float directionX = collInfo.movementDirection;
-		float hazardCheckRayLength = Mathf.Abs(movementDistance.x) + skinWidth;//2 * skinWidth;
 		float rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
 
 		if (Mathf.Abs(movementDistance.x) < skinWidth)
@@ -65,11 +64,11 @@ public class Controller2D :	RaycastController
 			Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
 			rayOrigin += Vector2.up * (horizontalRaySpacing * i);
 			RaycastHit2D terrainHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-			RaycastHit2D hazardHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, hazardCheckRayLength, hazardCollisionMask);
+			RaycastHit2D wallHazardHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, hazardCollisionMask);
 
 			Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
 
-			if (hazardHit) {
+			if (wallHazardHit && (wallHazardHit.distance < terrainHit.distance)) {
 				collInfo.touchedHazard = true;
 				movementDistance = Vector2.zero;
 			}
