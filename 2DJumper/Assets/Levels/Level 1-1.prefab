@@ -329,8 +329,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 171028949
+  m_SortingLayer: 4
   m_SortingOrder: 0
 --- !u!33 &315043868
 MeshFilter:
@@ -375,7 +375,6 @@ GameObject:
   - component: {fileID: 540771414}
   - component: {fileID: 540771413}
   - component: {fileID: 540771412}
-  - component: {fileID: 1553145511}
   m_Layer: 0
   m_Name: AtoJump
   m_TagString: Untagged
@@ -438,8 +437,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 171028949
+  m_SortingLayer: 4
   m_SortingOrder: 0
 --- !u!33 &540771414
 MeshFilter:
@@ -569,18 +568,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &1553145511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 540771410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 549cb708ccb94a94ab49572c51d2301c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &752834898
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +711,6 @@ GameObject:
   - component: {fileID: 779478256}
   - component: {fileID: 779478255}
   - component: {fileID: 779478254}
-  - component: {fileID: 1870790343}
   m_Layer: 0
   m_Name: JumpUpWall
   m_TagString: Untagged
@@ -786,8 +772,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 171028949
+  m_SortingLayer: 4
   m_SortingOrder: 0
 --- !u!33 &779478256
 MeshFilter:
@@ -917,18 +903,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &1870790343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779478252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 549cb708ccb94a94ab49572c51d2301c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1021368560
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,7 +1036,6 @@ GameObject:
   - component: {fileID: 1644809061}
   - component: {fileID: 1644809060}
   - component: {fileID: 1644809059}
-  - component: {fileID: 1936759082}
   m_Layer: 0
   m_Name: LeftSticktoMove
   m_TagString: Untagged
@@ -1086,8 +1059,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16.63, y: -9.87}
-  m_SizeDelta: {x: 20, y: 5}
+  m_AnchoredPosition: {x: -16.63, y: -5.543}
+  m_SizeDelta: {x: 4.563, y: 0.673}
   m_Pivot: {x: 0, y: 0}
 --- !u!23 &1644809062
 MeshRenderer:
@@ -1124,8 +1097,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 171028949
+  m_SortingLayer: 4
   m_SortingOrder: 0
 --- !u!33 &1644809061
 MeshFilter:
@@ -1229,7 +1202,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0.18165684, z: 15.545508, w: 4.153432}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1644809059}
     characterCount: 18
@@ -1255,18 +1228,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   m_maskType: 0
---- !u!114 &1936759082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1644809057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 549cb708ccb94a94ab49572c51d2301c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1658552598
 GameObject:
   m_ObjectHideFlags: 0

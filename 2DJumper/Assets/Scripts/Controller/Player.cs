@@ -239,6 +239,7 @@ public class Player : MonoBehaviour {
 		}
 		else {
 			grabWall = false;
+			wallGrabStamina = 0.0f;
 		}
 	}
 
