@@ -85,8 +85,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 0}
   minIntensity: 0.25
-  maxIntensity: 1
-  smoothing: 5
+  maxIntensity: 1.5
+  smoothing: 20
 --- !u!1 &185180041
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,8 +172,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 0}
   minIntensity: 0.25
-  maxIntensity: 1
-  smoothing: 5
+  maxIntensity: 1.5
+  smoothing: 20
 --- !u!1 &186811053
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,8 +666,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 0}
   minIntensity: 0.25
-  maxIntensity: 1
-  smoothing: 5
+  maxIntensity: 1.5
+  smoothing: 20
 --- !u!1 &761963602
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,8 +1047,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   light: {fileID: 0}
   minIntensity: 0.25
-  maxIntensity: 1
-  smoothing: 5
+  maxIntensity: 1.5
+  smoothing: 20
 --- !u!1 &1644809057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,7 +1323,7 @@ GameObject:
   - component: {fileID: 1986967396}
   - component: {fileID: 1986967398}
   - component: {fileID: 1986967397}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: 1-1 BackGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
