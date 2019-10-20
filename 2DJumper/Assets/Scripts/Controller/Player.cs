@@ -123,7 +123,7 @@ public class Player : MonoBehaviour {
 			velocity.y = 0;
 		}
 
-		if (controller.collInfo.touchedHazard && !controller.collInfo.below) {
+		if (controller.collInfo.touchedHazard) {// && !controller.collInfo.below) {
 			deathFade.StartDeathFadeCoroutine();
 		}
 
