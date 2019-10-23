@@ -12,6 +12,16 @@ public class Controller2D :	RaycastController
 	public CollisionInfo collInfo;
 	Vector2 playerInput;
 
+	struct ClosestRayHit {
+		public float distance;
+		public string colliderTag;
+
+		public ClosestRayHit (float rayLength) {
+			distance = rayLength + 1;
+			colliderTag = "";
+		}
+	}
+
 	public override void Start()
 	{
 		// This runs the start method within the RaycastController
@@ -35,12 +45,10 @@ public class Controller2D :	RaycastController
 		if (movementDistance.x != 0)
 			collInfo.movementDirection = (int)Mathf.Sign(movementDistance.x);
 
-		if (movementDistance.y < 0)
-			DescendSlope(ref movementDistance);
-
 		HorizontalCollisions(ref movementDistance);
 
-		VerticalCollisions(ref movementDistance);
+		if (!collInfo.touchedHazard)
+			VerticalCollisions(ref movementDistance);
 
 		transform.Translate(movementDistance);
 
@@ -59,73 +67,80 @@ public class Controller2D :	RaycastController
 			rayLength = 2 * skinWidth;
 		}
 
+		bool terrainDetected, hazardDetected;
+		terrainDetected = hazardDetected = false;
+
+		ClosestRayHit closestHazardHit = new ClosestRayHit();
+		ClosestRayHit closestTerrainHit = new ClosestRayHit();
+
 		for (int i = 0; i < horizontalRayCount; ++i)
 		{
 			Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
 			rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+
 			RaycastHit2D terrainHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-			RaycastHit2D wallHazardHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, hazardCollisionMask);
+			RaycastHit2D hazardHit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, hazardCollisionMask);
 
 			Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
 
-			if (wallHazardHit) {
-				if (wallHazardHit.distance < terrainHit.distance || (int)(wallHazardHit.distance*1000) == (int)(skinWidth*1000)) {
-					collInfo.touchedHazard = true;
-					movementDistance = Vector2.zero;
+			if (terrainHit) {
+				if (terrainDetected) {
+					if ((int)(terrainHit.distance * 1000) < (int)(closestTerrainHit.distance * 1000)) {
+						closestTerrainHit.colliderTag = terrainHit.collider.tag;
+						closestTerrainHit.distance = terrainHit.distance;
+					}
+
+				}
+				else {
+					terrainDetected = true;
+					closestTerrainHit.colliderTag = terrainHit.collider.tag;
+					closestTerrainHit.distance = terrainHit.distance;
 				}
 			}
 
-			if (terrainHit)
-			{
-				if (terrainHit.collider.tag == "JumpPlatform") {
-					if (terrainHit.distance == 0) {
-						collInfo.hitJumpPlatform = true;
+			if (hazardHit) {
+				if (hazardDetected) {
+					if ((int)(hazardHit.distance * 1000) < (int)(closestHazardHit.distance * 1000)) {
+						closestTerrainHit.colliderTag = hazardHit.collider.tag;
+						closestTerrainHit.distance = hazardHit.distance;
 					}
-					continue;
+
 				}
-
-				// If the character is inside another collider
-				if (terrainHit.distance == 0)
-				{
-					continue;
-				}
-
-				float slopeAngle = Vector2.Angle(terrainHit.normal, Vector2.up);
-
-				if (i == 0 && slopeAngle <= maxClimbAngle)
-				{
-					if (collInfo.descendingSlope)
-					{
-						collInfo.descendingSlope = false;
-						movementDistance = collInfo.movementDistanceOld;
-					}
-
-					float distanceToSlopeStart = 0;
-					if (slopeAngle != collInfo.slopeAngleOld)
-					{
-						distanceToSlopeStart = terrainHit.distance - skinWidth;
-						movementDistance.x -= distanceToSlopeStart * directionX;
-					}
-
-					ClimbSlope(ref movementDistance, slopeAngle);
-
-					movementDistance.x += distanceToSlopeStart * directionX;
-				}
-
-				if (!collInfo.climbingSlope || slopeAngle > maxClimbAngle)
-				{
-					movementDistance.x = Mathf.Min(Mathf.Abs(movementDistance.x), (terrainHit.distance - skinWidth)) * directionX;
-					rayLength = Mathf.Min(Mathf.Abs(movementDistance.x) + skinWidth, terrainHit.distance);
-
-					if (collInfo.climbingSlope)
-					{
-						movementDistance.y = Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(movementDistance.x);
-					}
-
-					collInfo.left = directionX == -1;
-					collInfo.right = directionX == 1;
+				else {
+					hazardDetected = true;
+					closestHazardHit.colliderTag = hazardHit.collider.tag;
+					closestHazardHit.distance = hazardHit.distance;
 				}
 			}
+		}
+
+		if (hazardDetected) {
+			Debug.Log("Horizontal detection distance: " + closestHazardHit.distance);
+			if (closestHazardHit.distance == 0) {
+				Debug.Log("horizontal");
+				Debug.Break();
+				collInfo.touchedHazard = true;
+				movementDistance = Vector2.zero;
+				return;
+			}
+		}
+
+		if (terrainDetected) {
+			if (closestTerrainHit.colliderTag == "JumpPlatform") {
+				if (closestTerrainHit.distance == 0) {
+					collInfo.hitJumpPlatform = true;
+				}
+				return;
+			}
+
+			// If the character is inside another collider
+			if (closestTerrainHit.distance == 0) {
+				return;
+			}
+
+			movementDistance.x = Mathf.Min(Mathf.Abs(movementDistance.x), (closestTerrainHit.distance - skinWidth)) * directionX;
+			collInfo.left = directionX == -1;
+			collInfo.right = directionX == 1;
 		}
 	}
 
@@ -138,15 +153,13 @@ public class Controller2D :	RaycastController
 			rayLength = 2 * skinWidth;
 		}
 
-		float movementAmountY = 0.0f;
-		float movementAmountX = movementDistance.x;
-		bool rayHit = false;
+		bool terrainDetected = false;
 		bool hazardDetected = false;
-		float closestTerrainHit = rayLength + 1;
-		float closestHazardHit = rayLength + 1;
 
-		for (int i = 0; i < verticalRayCount; ++i)
-		{
+		ClosestRayHit closestHazardHit = new ClosestRayHit();
+		ClosestRayHit closestTerrainHit = new ClosestRayHit();
+
+		for (int i = 0; i < verticalRayCount; ++i) {
 			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + movementDistance.x);
 
@@ -155,139 +168,71 @@ public class Controller2D :	RaycastController
 
 			Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 
+			if (terrainHit) {
+				if (terrainDetected) {
+					if ((int)(terrainHit.distance * 1000) < (int)(closestTerrainHit.distance * 1000)) {
+						closestTerrainHit.colliderTag = terrainHit.collider.tag;
+						closestTerrainHit.distance = terrainHit.distance;
+					}
+
+				}
+				else {
+					terrainDetected = true;
+					closestTerrainHit.colliderTag = terrainHit.collider.tag;
+					closestTerrainHit.distance = terrainHit.distance;
+				}
+			}
+
 			if (hazardHit) {
-				if (!hazardDetected) {
+				if (hazardDetected) {
+					if ((int)(hazardHit.distance * 1000) < (int)(closestHazardHit.distance * 1000)) {
+						closestTerrainHit.colliderTag = hazardHit.collider.tag;
+						closestTerrainHit.distance = hazardHit.distance;
+					}
+
+				}
+				else {
 					hazardDetected = true;
-					closestHazardHit = hazardHit.distance;
-				}
-				else if (hazardHit.distance < closestHazardHit) {
-					closestHazardHit = hazardHit.distance;
-				}
-			}
-
-			if (terrainHit)
-			{
-				// Check for passable platforms
-				if (terrainHit.collider.tag == "Passable Platform") {
-					if (directionY == 1 || terrainHit.distance == 0 || collInfo.fallingThroughPlatform) {
-						continue;
-					}
-
-					if (playerInput.y == -1 && playerInput.x == 0) {
-						collInfo.fallingThroughPlatform = true;
-						Invoke("ResetFallingThroughPlatform", 0.5f);
-						continue;
-					}
-				}
-
-				if (terrainHit.collider.tag == "JumpPlatform") {
-					collInfo.hitJumpPlatform = true;
-					continue;
-				}
-
-				if (!rayHit) {
-					rayHit = true;
-					closestTerrainHit = terrainHit.distance;
-				}
-				else if (terrainHit.distance < closestTerrainHit) {
-					closestTerrainHit = terrainHit.distance;
-				}
-
-				movementAmountY = (terrainHit.distance - skinWidth) * directionY;
-
-				rayLength = terrainHit.distance;
-
-				if (collInfo.climbingSlope) {
-					movementAmountX = movementAmountY / Mathf.Tan(collInfo.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(movementAmountX);
+					closestHazardHit.colliderTag = hazardHit.collider.tag;
+					closestHazardHit.distance = hazardHit.distance;
 				}
 			}
 		}
 
-		//Check if we hit a hazard
-		if (closestHazardHit < closestTerrainHit) {
-			collInfo.touchedHazard = true;
-			movementDistance = Vector2.zero;
-			return;
+		if (hazardDetected) {
+			if (closestHazardHit.distance == 0) {
+				Debug.Log("vertical");
+				Debug.Break();
+				collInfo.touchedHazard = true;
+				movementDistance = Vector2.zero;
+				return;
+			}
 		}
 
-		// If the ground was not detected then check if we are near a ledge.
-		if (!rayHit && !collInfo.touchedHazard) {
-			LedgeDetection(ref movementDistance);
-			movementDistance.x = movementAmountX;
-		}
-		else {
-			movementDistance.y = movementAmountY;
-			movementDistance.x = movementAmountX;
+		if (terrainDetected) {
+			// Check for passable platforms
+			if (closestTerrainHit.colliderTag == "Passable Platform") {
+				if (directionY == 1 || closestTerrainHit.distance == 0 || collInfo.fallingThroughPlatform) {
+					return;
+				}
+
+				if (playerInput.y == -1 && playerInput.x == 0) {
+					collInfo.fallingThroughPlatform = true;
+					Invoke("ResetFallingThroughPlatform", 0.5f);
+					return;
+				}
+			}
+
+			if (closestTerrainHit.colliderTag == "JumpPlatform") {
+				collInfo.hitJumpPlatform = true;
+				return;
+			}
+
+			movementDistance.y = (closestTerrainHit.distance - skinWidth) * directionY;
 
 			collInfo.above = directionY == 1;
 			collInfo.below = directionY == -1;
 			collInfo.grounded = true;
-		}
-
-		if (collInfo.climbingSlope)
-		{
-			float directionX = Mathf.Sign(movementDistance.x);
-			rayLength = Mathf.Abs(movementDistance.x) + skinWidth;
-			Vector2 rayOrigin = ((directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight) + Vector2.up * movementDistance.y;
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-
-			if (hit)
-			{
-				float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-
-				if (slopeAngle != collInfo.slopeAngle)
-				{
-					movementDistance.x = (hit.distance - skinWidth) * directionX;
-					collInfo.slopeAngle = slopeAngle;
-				}
-			}
-		}
-	}
-
-	void ClimbSlope (ref Vector2 movementDistance, float slopeAngle)
-	{
-		float moveDistance = Mathf.Abs(movementDistance.x);
-		float climbmovementDistanceY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
-
-		if (movementDistance.y <= climbmovementDistanceY)
-		{
-			movementDistance.y = climbmovementDistanceY;
-			movementDistance.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(movementDistance.x);
-			collInfo.below = true;
-			collInfo.climbingSlope = true;
-			collInfo.slopeAngle = slopeAngle;
-		}
-	}
-
-	void DescendSlope (ref Vector2 movementDistance)
-	{
-		float directionX = Mathf.Sign(movementDistance.x);
-		Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
-		RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -Vector2.up, Mathf.Infinity, collisionMask);
-
-		if (hit)
-		{
-			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-
-			if (slopeAngle != 0 && slopeAngle <= maxDescendAngle)
-			{
-				if (Mathf.Sign(hit.normal.x) == directionX)
-				{
-					if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(movementDistance.x))
-					{
-						float moveDistance = Mathf.Abs(movementDistance.x);
-
-						float descendmovementDistanceY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
-						movementDistance.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(movementDistance.x);
-						movementDistance.y -= descendmovementDistanceY;
-
-						collInfo.slopeAngle = slopeAngle;
-						collInfo.descendingSlope = true;
-						collInfo.below = true;
-					}
-				}
-
-			}
 		}
 	}
 
