@@ -115,10 +115,7 @@ public class Controller2D :	RaycastController
 		}
 
 		if (hazardDetected) {
-			Debug.Log("Horizontal detection distance: " + closestHazardHit.distance);
 			if (closestHazardHit.distance == 0) {
-				Debug.Log("horizontal");
-				Debug.Break();
 				collInfo.touchedHazard = true;
 				movementDistance = Vector2.zero;
 				return;
@@ -201,8 +198,6 @@ public class Controller2D :	RaycastController
 
 		if (hazardDetected) {
 			if (closestHazardHit.distance == 0) {
-				Debug.Log("vertical");
-				Debug.Break();
 				collInfo.touchedHazard = true;
 				movementDistance = Vector2.zero;
 				return;
