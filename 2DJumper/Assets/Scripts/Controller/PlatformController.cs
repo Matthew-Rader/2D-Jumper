@@ -18,6 +18,8 @@ public class PlatformController : RaycastController
 	// Store the localWaypoints in global space
 	Vector3[] globalWaypoints;
 
+	[SerializeField] private GameObject pathLineRenderer;
+
 	// PRIVATE VARIABLES -----------------------------
 	List<PassengerMovement> passengerMovement;
 	Dictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
@@ -32,7 +34,29 @@ public class PlatformController : RaycastController
 		{
 			globalWaypoints[i] = localWaypoints[i] + transform.position;
 		}
-    }
+
+		if (localWaypoints != null) {
+			float size = 0.3f;
+
+			LineRenderer newLine = Instantiate(pathLineRenderer, transform).GetComponent<LineRenderer>(); ;
+			newLine.positionCount = 1;
+
+			for (int i = 0; i < localWaypoints.Length; ++i) {
+				Vector3 globalWaypointPositionA = (Application.isPlaying) ?
+					globalWaypoints[i] : localWaypoints[i] + transform.position;
+
+				int nextWaypoint = (i + 1) % localWaypoints.Length;
+				Vector3 globalWaypointPositionB = (Application.isPlaying) ?
+					globalWaypoints[nextWaypoint] : localWaypoints[nextWaypoint] + transform.position;
+
+				if ((i < localWaypoints.Length - 1) || (i == localWaypoints.Length - 1 && cyclicPath)) {
+					newLine.positionCount += 1;
+					newLine.SetPosition(i, globalWaypointPositionA);
+					newLine.SetPosition(i + 1, globalWaypointPositionB);
+				}
+			}
+		}
+	}
 
     // Update is called once per frame
     void Update()
