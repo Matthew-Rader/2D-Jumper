@@ -28,6 +28,7 @@ public class Controller2D :	RaycastController
 		base.Start();
 
 		collInfo.movementDirection = 1;
+		collInfo.groundedLastFrame = false;
 	}
 
 	public void Move (Vector2 movementDistance, bool standingOnPlatform) {
@@ -228,6 +229,9 @@ public class Controller2D :	RaycastController
 			collInfo.above = directionY == 1;
 			collInfo.below = directionY == -1;
 			collInfo.grounded = true;
+		}
+		else {
+			LedgeDetection(ref movementDistance);
 		}
 	}
 
