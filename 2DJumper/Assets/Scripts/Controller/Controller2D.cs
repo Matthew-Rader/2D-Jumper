@@ -271,6 +271,7 @@ public class Controller2D :	RaycastController
 
 		public int movementDirection;
 		public bool grounded;
+		public bool groundedLastFrame;
 
 		public bool onEdge;
 		public bool overEdge;

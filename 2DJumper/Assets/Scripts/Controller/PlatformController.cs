@@ -169,10 +169,9 @@ public class PlatformController : RaycastController
 
 			for (int i = 0; i < horizontalRayCount; ++i)
 			{
-				Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+				Vector2 rayOrigin = raycastOrigins.bottomLeft;
 				rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
-
+				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * -1, rayLength, passengerMask);
 
 				if (hit && hit.distance != 0)
 				{
@@ -180,11 +179,44 @@ public class PlatformController : RaycastController
 					{
 						movedPassengers.Add(hit.transform);
 
-						float pushX = velocity.x - (hit.distance - skinWidth) * directionX;
+						float pushX = velocity.x - (hit.distance - skinWidth) * -1;
 						// Adding a minute downward force resolves an issue where the passenger would not be checking vertical
 						// collisions since it's Y movement was 0.
-						float pushY = -skinWidth; 
-						passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
+						float pushY = -skinWidth;
+
+						if (hit.transform.GetComponent<Controller2D>().collInfo.below) {
+							passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
+						}
+						else {
+							Vector3 playerNewPosition = hit.transform.position + new Vector3(pushX, 0f);
+							hit.transform.position = playerNewPosition;
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < horizontalRayCount; ++i) 
+			{
+				Vector2 rayOrigin = raycastOrigins.bottomRight;
+				rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+				RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * 1, rayLength, passengerMask);
+
+				if (hit && hit.distance != 0) {
+					if (!movedPassengers.Contains(hit.transform)) {
+						movedPassengers.Add(hit.transform);
+
+						float pushX = velocity.x - (hit.distance - skinWidth) * 1;
+						// Adding a minute downward force resolves an issue where the passenger would not be checking vertical
+						// collisions since it's Y movement was 0.
+						float pushY = -skinWidth;
+
+						if (hit.transform.GetComponent<Controller2D>().collInfo.below) {
+							passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
+						}
+						else {
+							Vector3 playerNewPosition = hit.transform.position + new Vector3(pushX, 0f);
+							hit.transform.position = playerNewPosition;
+						}
 					}
 				}
 			}
