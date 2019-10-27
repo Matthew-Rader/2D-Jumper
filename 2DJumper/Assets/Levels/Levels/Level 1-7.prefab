@@ -7068,7 +7068,7 @@ GameObject:
   - component: {fileID: 5918573356654839911}
   m_Layer: 0
   m_Name: CM vcam 1-7
-  m_TagString: Untagged
+  m_TagString: vcam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11566,11 +11566,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2416295360545644069}
     m_Modifications:
-    - target: {fileID: 2562598663456949351, guid: 7a5c57047afa4954b824eb51eef9cc8e,
-        type: 3}
-      propertyPath: m_Name
-      value: MovingPlatform (1)
-      objectReference: {fileID: 0}
     - target: {fileID: 2562598663456949348, guid: 7a5c57047afa4954b824eb51eef9cc8e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11625,6 +11620,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2562598663456949351, guid: 7a5c57047afa4954b824eb51eef9cc8e,
+        type: 3}
+      propertyPath: m_Name
+      value: MovingPlatform (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2562598663456949349, guid: 7a5c57047afa4954b824eb51eef9cc8e,
         type: 3}
@@ -12326,11 +12326,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2416295360545644069}
     m_Modifications:
-    - target: {fileID: 2562598663456949351, guid: 7a5c57047afa4954b824eb51eef9cc8e,
-        type: 3}
-      propertyPath: m_Name
-      value: MovingPlatform
-      objectReference: {fileID: 0}
     - target: {fileID: 2562598663456949348, guid: 7a5c57047afa4954b824eb51eef9cc8e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12385,6 +12380,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2562598663456949351, guid: 7a5c57047afa4954b824eb51eef9cc8e,
+        type: 3}
+      propertyPath: m_Name
+      value: MovingPlatform
       objectReference: {fileID: 0}
     - target: {fileID: 2562598663456949349, guid: 7a5c57047afa4954b824eb51eef9cc8e,
         type: 3}

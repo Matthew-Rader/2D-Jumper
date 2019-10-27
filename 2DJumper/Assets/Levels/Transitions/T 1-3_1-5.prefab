@@ -816,3 +816,6 @@ MonoBehaviour:
   levelA: {fileID: 0}
   levelB: {fileID: 0}
   gameManager: {fileID: 0}
+  cameraA: {fileID: 0}
+  cameraB: {fileID: 0}
+  verticalTransition: 0
