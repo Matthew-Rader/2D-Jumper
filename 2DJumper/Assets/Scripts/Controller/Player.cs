@@ -29,6 +29,7 @@ public class Player : MonoBehaviour {
 	//[SerializeField] private Vector2 wallJumpClimb;
 	[SerializeField] private float wallJumpUp = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
+	[SerializeField] private float jumpQueueTimer = 0.15f;
 
 	[Header("Better Jumping Gravity Multiplier")]
 	[SerializeField] private float gravityFallMultiplier = 10;
@@ -54,12 +55,15 @@ public class Player : MonoBehaviour {
 	private bool grabWall = false;
 	private bool canMove = true;
 	private int wallDirX;
+	private bool onLeftWall, onRightWall;
+
+	private float timeToWallUnstick;
+	private float wallStickTime = 0.15f;
+
 	private bool jumpInputDown;
 	private bool jumpInputUp;
 	private bool jumping;
-	private bool onLeftWall, onRightWall;
-	private float timeToWallUnstick;
-	private float wallStickTime = 0.15f;
+	private bool applyJumpQueue; 
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
@@ -70,7 +74,7 @@ public class Player : MonoBehaviour {
 		maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 		minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
-		jumping = onLeftWall = onRightWall = false;
+		jumping = onLeftWall = onRightWall = applyJumpQueue = false;
 
 		transform.position = gameManager.currentReSpawnPoint.transform.position;
     }
@@ -80,8 +84,11 @@ public class Player : MonoBehaviour {
 
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
 
-		if (jumpInputDown)
+		if (jumpInputDown ||
+			(applyJumpQueue && (controller.collInfo.below || ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below))))
+		{
 			HandleJump();
+		}
 
 		if (jumpInputUp) {
 			if (velocity.y > minJumpVelocity) {
@@ -193,6 +200,7 @@ public class Player : MonoBehaviour {
 
 	void HandleJump() {
 		jumping = false;
+
 		// Standrad Jump
 		if (controller.collInfo.below) {
 			velocity.y = maxJumpVelocity;
@@ -214,6 +222,9 @@ public class Player : MonoBehaviour {
 				velocity.y = wallJumpAway.y;
 				jumping = true;
 			}
+		}
+		else if (!applyJumpQueue) {
+			StartCoroutine(JumpQueueTimer(jumpQueueTimer));
 		}
 	}
 
@@ -253,6 +264,12 @@ public class Player : MonoBehaviour {
 		canMove = false;
 		yield return new WaitForSeconds(time);
 		canMove = true;
+	}
+
+	IEnumerator JumpQueueTimer (float time) {
+		applyJumpQueue = true;
+		yield return new WaitForSeconds(time);
+		applyJumpQueue = false;
 	}
 
 	public void ResetPlayer () {
