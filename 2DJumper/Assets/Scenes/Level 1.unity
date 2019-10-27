@@ -2893,36 +2893,6 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 871776812}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: moveSpeed
-      value: 9.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: maxJumpHeight
-      value: 2.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: wallJumpAway.x
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: wallJumpAway.y
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: accelerationTimeGrounded
-      value: 0.055
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: jumpQueueTimer
-      value: 0.15
-      objectReference: {fileID: 0}
     - target: {fileID: 1305093374695746707, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
         type: 3}
       propertyPath: fadeAnim
@@ -3031,7 +3001,7 @@ PrefabInstance:
     - target: {fileID: 1449106111755340823, guid: c238b73fd742cd449ba6d8a9ee912a45,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.680687
+      value: -5.687546
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c238b73fd742cd449ba6d8a9ee912a45, type: 3}

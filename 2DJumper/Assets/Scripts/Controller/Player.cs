@@ -17,15 +17,17 @@ public class Player : MonoBehaviour {
 	[SerializeField] private GameManager gameManager;
 
 	[Header("Movement")]
-	[SerializeField] private float moveSpeed = 8.5f;
+	[SerializeField] private float moveSpeed = 9.75f;
 	[SerializeField] private float accelerationTimeAirborne = 0.1f;
-	[SerializeField] private float accelerationTimeGrounded = 0.05f;
+	[SerializeField] private float decelerationTimeAirborne = 0.1f;
+	[SerializeField] private float accelerationTimeGrounded = 0.15f;
+	[SerializeField] private float decelerationTimeGrounded = 0.05f;
 
 	[Header("Jump Parameters")]
 	[SerializeField] private float maxJumpHeight = 2.25f;
 	[SerializeField] private float minJumpHeight = 1.0f;
 	[SerializeField] private float timeToJumpApex = 0.25f;
-	[SerializeField] private Vector2 wallJumpAway = new Vector2(16.0f, 17.5f);
+	[SerializeField] private Vector2 wallJumpAway = new Vector2(17.0f, 17.5f);
 	//[SerializeField] private Vector2 wallJumpClimb;
 	[SerializeField] private float wallJumpUp = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
@@ -116,8 +118,16 @@ public class Player : MonoBehaviour {
 			}
 
 			float targetVelocityX = moveX * moveSpeed;
-			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+			if (targetVelocityX != 0) 
+			{
+				velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+					(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+			}
+			else 
+			{
+				velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+					(controller.collInfo.below) ? decelerationTimeGrounded : decelerationTimeAirborne);
+			}
 
 			HandleWallSliding();
 
