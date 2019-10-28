@@ -10,6 +10,7 @@ TagManager:
   - Hazard
   - JumpPlatform
   - vcam
+  - GameManager
   layers:
   - Default
   - TransparentFX

@@ -16,10 +16,10 @@ public class TransitionCurrentLevel : MonoBehaviour
 	[SerializeField] private bool noSpawnPointB;
 	[SerializeField] private GameObject levelA;
 	[SerializeField] private GameObject levelB;
-	[SerializeField] private GameManager gameManager;
-	[SerializeField] private CinemachineVirtualCamera cameraA;
-	[SerializeField] private CinemachineVirtualCamera cameraB;
 	[SerializeField] private bool verticalTransition = false;
+	private CinemachineVirtualCamera cameraA;
+	private CinemachineVirtualCamera cameraB;
+	private GameManager gameManager;
 
 	private const float _coroutinePauseTime = 0.25f;
 	private const float _playerTransitionHorizontalDistance = 3f;
@@ -71,6 +71,13 @@ public class TransitionCurrentLevel : MonoBehaviour
 
 		if (cameraB == null) {
 			Debug.LogError("ChangeVirutalCameraPriority is missing requiered component cameraB");
+			UnityEditor.EditorApplication.isPlaying = false;
+		}
+
+		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
+
+		if (gameManager == null) {
+			Debug.LogError("GameManager is missing");
 			UnityEditor.EditorApplication.isPlaying = false;
 		}
 	}

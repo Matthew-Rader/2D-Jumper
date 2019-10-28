@@ -456,7 +456,7 @@ GameObject:
   - component: {fileID: 6663921450184813343}
   m_Layer: 0
   m_Name: CM vcam 1-x
-  m_TagString: Untagged
+  m_TagString: vcam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
