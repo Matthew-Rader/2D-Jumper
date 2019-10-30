@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	public GameObject currentLevel;
-	public GameObject currentReSpawnPoint;
+	public Transform currentReSpawnPoint;
 
     // Start is called before the first frame update
     void Awake()

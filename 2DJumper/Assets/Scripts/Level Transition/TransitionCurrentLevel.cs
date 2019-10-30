@@ -4,22 +4,28 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.Events;
 
-public class TransitionCurrentLevel : MonoBehaviour
-{
+public class TransitionCurrentLevel : MonoBehaviour {
 	// This script is in charage of updating the gamemanger and letting it know
 	// the player has transitioned to a new level. It does this by updating the 
 	// player spawn point and the known current level.
 
-	[SerializeField] private GameObject spawnPointA;
-	[SerializeField] private bool noSpawnPointA;
-	[SerializeField] private GameObject spawnPointB;
-	[SerializeField] private bool noSpawnPointB;
-	[SerializeField] private GameObject levelA;
-	[SerializeField] private GameObject levelB;
+	//[SerializeField] private GameObject spawnPointA;
+
+	//[SerializeField] private GameObject spawnPointB;
+
+	[SerializeField] public GameObject levelA;
+	[SerializeField] public GameObject levelB;
 	[SerializeField] private bool verticalTransition = false;
+	public bool noSpawnPointA;
+	public bool noSpawnPointB;
 	private CinemachineVirtualCamera cameraA;
 	private CinemachineVirtualCamera cameraB;
 	private GameManager gameManager;
+
+	public List<Transform> spawnPointsA = new List<Transform>();
+	public List<Transform> spawnPointsB = new List<Transform>();
+	public Transform choosenSpawnPointA;
+	public Transform choosenSpawnPointB;
 
 	private const float _coroutinePauseTime = 0.25f;
 	private const float _playerTransitionHorizontalDistance = 3f;
@@ -28,17 +34,17 @@ public class TransitionCurrentLevel : MonoBehaviour
 
 	void Awake()
 	{
-		if (spawnPointA == null && !noSpawnPointA)
-		{
-			Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointA");
-			UnityEditor.EditorApplication.isPlaying = false;
-		}
+		//if (spawnPointA == null && !noSpawnPointA)
+		//{
+		//	Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointA");
+		//	UnityEditor.EditorApplication.isPlaying = false;
+		//}
 
-		if (spawnPointB == null && !noSpawnPointB)
-		{
-			Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointB");
-			UnityEditor.EditorApplication.isPlaying = false;
-		}
+		//if (spawnPointB == null && !noSpawnPointB)
+		//{
+		//	Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointB");
+		//	UnityEditor.EditorApplication.isPlaying = false;
+		//}
 
 		if (levelA == null)
 		{
@@ -55,12 +61,14 @@ public class TransitionCurrentLevel : MonoBehaviour
 		foreach (Transform child in levelA.transform) {
 			if (child.CompareTag("vcam")) {
 				cameraA = child.GetComponent<CinemachineVirtualCamera>();
+				break;
 			}
 		}
 
 		foreach (Transform child in levelB.transform) {
 			if (child.CompareTag("vcam")) {
 				cameraB = child.GetComponent<CinemachineVirtualCamera>();
+				break;
 			}
 		}
 
@@ -117,11 +125,11 @@ public class TransitionCurrentLevel : MonoBehaviour
 	void UpdateGameManager () {
 		if (gameManager.currentLevel == levelA) {
 			gameManager.currentLevel = levelB;
-			gameManager.currentReSpawnPoint = spawnPointB;
+			gameManager.currentReSpawnPoint = choosenSpawnPointB;
 		}
 		else if (gameManager.currentLevel == levelB) {
 			gameManager.currentLevel = levelA;
-			gameManager.currentReSpawnPoint = spawnPointA;
+			gameManager.currentReSpawnPoint = choosenSpawnPointA;
 		}
 	}
 
@@ -151,5 +159,33 @@ public class TransitionCurrentLevel : MonoBehaviour
 
 		// Unfreeze the player's rigidbody
 		playerController.enabled = true;
+	}
+
+	// Used by the tool extension 
+	public void GrabLevelSpawnPoints () {
+		foreach (Transform child in levelA.transform) {
+			if (child.CompareTag("SpawnPointParent")) {
+				spawnPointsA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				break;
+			}
+		}
+
+		foreach (Transform child in levelB.transform) {
+			if (child.CompareTag("SpawnPointParent")) {
+				spawnPointsB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				break;
+			}
+		}
+	}
+
+	public void SetLevelSpawnPoint (char level, int index) {
+		switch (level) {
+			case 'a':
+				choosenSpawnPointA = spawnPointsA[index];
+				break;
+			case 'b':
+				choosenSpawnPointB = spawnPointsB[index];
+				break;
+		}
 	}
 }

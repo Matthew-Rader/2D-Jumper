@@ -11,6 +11,8 @@ TagManager:
   - JumpPlatform
   - vcam
   - GameManager
+  - SpawnPoint
+  - SpawnPointParent
   layers:
   - Default
   - TransparentFX
