@@ -43,13 +43,15 @@ public class Controller2D :	RaycastController
 		collInfo.Reset();
 		collInfo.movementDistanceOld = movementDistance;
 
-		if (movementDistance.x != 0)
+		if (movementDistance.x != 0) {
 			collInfo.movementDirection = (int)Mathf.Sign(movementDistance.x);
+		}
 
 		HorizontalCollisions(ref movementDistance);
 
-		if (!collInfo.touchedHazard)
+		if (!collInfo.touchedHazard) {
 			VerticalCollisions(ref movementDistance);
+		}
 
 		transform.Translate(movementDistance);
 
@@ -74,6 +76,7 @@ public class Controller2D :	RaycastController
 		ClosestRayHit closestHazardHit = new ClosestRayHit();
 		ClosestRayHit closestTerrainHit = new ClosestRayHit();
 
+		// Cast out rays and determine the closest piece of terrain and / or a hazard
 		for (int i = 0; i < horizontalRayCount; ++i)
 		{
 			Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
@@ -157,6 +160,7 @@ public class Controller2D :	RaycastController
 		ClosestRayHit closestHazardHit = new ClosestRayHit();
 		ClosestRayHit closestTerrainHit = new ClosestRayHit();
 
+		// Cast out rays and determine the closest piece of terrain and / or a hazard
 		for (int i = 0; i < verticalRayCount; ++i) {
 			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + movementDistance.x);

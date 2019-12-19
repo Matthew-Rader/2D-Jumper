@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Cinemachine;
 
 /* 
@@ -42,6 +43,15 @@ public class Player : MonoBehaviour {
 	[SerializeField] private float wallGrabStaminaMax = 5.0f;
 	private float wallGrabStamina = 0.0f;
 	private bool wallGrabDepleted = false;
+
+	[Header("Game Events")]
+	// Should call DeathFade.StartDeathFadeCoroutine()
+	public UnityEvent touchedHazard;
+	public UnityEvent onGroundJump;
+	public UnityEvent onWallJumpAway;
+	public UnityEvent onWallJumpVertical;
+	public UnityEvent onMove;
+	public UnityEvent onPlayerReset;
 
 	// PRIVATE VARIABLES
 	private float moveX, moveY;
@@ -107,46 +117,19 @@ public class Player : MonoBehaviour {
 			velocity.x = 0;
 		}
 		else {
-			if (velocity.y < 0) {
-				velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
-			}
-			else if (jumping || !controller.collInfo.grounded) {
-				velocity.y += gravity * Time.deltaTime;
-			}
-			else if (controller.collInfo.grounded) {
-				velocity.y = 0;
-			}
+			DetermineVelocityY();
 
-			float targetVelocityX = moveX * moveSpeed;
-			if (targetVelocityX != 0) 
-			{
-				velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-					(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-			}
-			else 
-			{
-				velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-					(controller.collInfo.below) ? decelerationTimeGrounded : decelerationTimeAirborne);
-			}
+			DetermineVelocityX();
 
 			HandleWallSliding();
 
-			HandleWallSlideNavigationDelay();
+			HandleStickyWallDelay();
 		}
 
+		// Move the player
 		controller.Move(velocity * Time.deltaTime, new Vector2(moveX, moveY));
 
-		if (controller.collInfo.above || controller.collInfo.below) {
-			velocity.y = 0;
-		}
-
-		if (controller.collInfo.touchedHazard) {// && !controller.collInfo.below) {
-			deathFade.StartDeathFadeCoroutine();
-		}
-
-		if (controller.collInfo.hitJumpPlatform) {
-			HandleJumpPlatform();
-		}
+		CheckForCollisions();
 
 		// TODO: Remove once animations are made.
 		GetComponent<SpriteRenderer>().flipX = (controller.collInfo.movementDirection == 1f) ? false : true;
@@ -161,60 +144,15 @@ public class Player : MonoBehaviour {
 		jumpInputUp = (Input.GetButtonUp("Jump")) ? true : false;
 	}
 
-	void HandleWallSliding() {
-		wallSliding = false;
-
-		if ((controller.collInfo.left && moveX == -1 || controller.collInfo.right && moveX == 1) &&
-			!controller.collInfo.below && velocity.y < 0)
-		{
-			wallSliding = true;
-
-			if (velocity.y < -wallSlideSpeed) {
-				velocity.y = -wallSlideSpeed;
-			}
-
-			if (controller.collInfo.left) {
-				onLeftWall = true;
-				onRightWall = false;
-			}
-			else if (controller.collInfo.right) {
-				onRightWall = true;
-				onLeftWall = false;
-			}
-		}
-	}
-
-	void HandleWallSlideNavigationDelay () {
-		if ((controller.collInfo.right || controller.collInfo.left) && !controller.collInfo.below && velocity.y < 0) {
-			if (timeToWallUnstick > 0) {
-				velocitySmoothing = 0;
-				velocity.x = 0;
-
-				if (moveX != wallDirX && moveX != 0) {
-					timeToWallUnstick -= Time.deltaTime;
-
-					// Wall slide rate needs to be applied so the player doesn't fall at the rate of gravity
-					if (velocity.y < -wallSlideSpeed) {
-						velocity.y = -wallSlideSpeed;
-					}
-				}
-				else {
-					timeToWallUnstick = wallStickTime;
-				}
-			}
-		}
-		else {
-			timeToWallUnstick = wallStickTime;
-		}
-	}
-
-	void HandleJump() {
+	private void HandleJump() {
 		jumping = false;
 
 		// Standrad Jump
 		if (controller.collInfo.below) {
 			velocity.y = maxJumpVelocity;
 			jumping = true;
+
+			onGroundJump.Invoke();
 		}
 		// Some sort of wall jump
 		else if ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below) {
@@ -223,6 +161,8 @@ public class Player : MonoBehaviour {
 				velocity.x = 0;
 				velocity.y = wallJumpUp;
 				jumping = true;
+
+				onWallJumpVertical.Invoke();
 			}
 			else {
 				StopCoroutine(DisableMovementWallJumpOff(0));
@@ -231,6 +171,8 @@ public class Player : MonoBehaviour {
 				velocity.x = -wallDirX * wallJumpAway.x;
 				velocity.y = wallJumpAway.y;
 				jumping = true;
+
+				onWallJumpAway.Invoke();
 			}
 		}
 		else if (!applyJumpQueue) {
@@ -264,7 +206,92 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	void HandleJumpPlatform () {
+	private void DetermineVelocityY () {
+		if (velocity.y < 0) {
+			velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
+		}
+		else if (jumping || !controller.collInfo.grounded) {
+			velocity.y += gravity * Time.deltaTime;
+		}
+		else if (controller.collInfo.grounded) {
+			velocity.y = 0;
+		}
+	}
+
+	private void DetermineVelocityX () {
+		float targetVelocityX = moveX * moveSpeed;
+		if (targetVelocityX != 0) {
+			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+		}
+		else {
+			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
+				(controller.collInfo.below) ? decelerationTimeGrounded : decelerationTimeAirborne);
+		}
+	}
+
+	private void HandleWallSliding () {
+		wallSliding = false;
+
+		if ((controller.collInfo.left && moveX == -1 || controller.collInfo.right && moveX == 1) &&
+			!controller.collInfo.below && velocity.y < 0) {
+			wallSliding = true;
+
+			if (velocity.y < -wallSlideSpeed) {
+				velocity.y = -wallSlideSpeed;
+			}
+
+			if (controller.collInfo.left) {
+				onLeftWall = true;
+				onRightWall = false;
+			}
+			else if (controller.collInfo.right) {
+				onRightWall = true;
+				onLeftWall = false;
+			}
+		}
+	}
+
+	private void HandleStickyWallDelay () {
+		if ((controller.collInfo.right || controller.collInfo.left) && !controller.collInfo.below && velocity.y < 0) {
+			if (timeToWallUnstick > 0) {
+				velocitySmoothing = 0;
+				velocity.x = 0;
+
+				if (moveX != wallDirX && moveX != 0) {
+					timeToWallUnstick -= Time.deltaTime;
+
+					// Wall slide rate needs to be applied so the player doesn't fall at the rate of gravity
+					if (velocity.y < -wallSlideSpeed) {
+						velocity.y = -wallSlideSpeed;
+					}
+				}
+				else {
+					timeToWallUnstick = wallStickTime;
+				}
+			}
+		}
+		else {
+			timeToWallUnstick = wallStickTime;
+		}
+	}
+
+	private void CheckForCollisions () {
+		if (controller.collInfo.above || controller.collInfo.below) {
+			velocity.y = 0;
+		}
+
+		if (controller.collInfo.touchedHazard) {
+			//deathFade.StartDeathFadeCoroutine();
+			touchedHazard.Invoke();
+		}
+
+		if (controller.collInfo.hitJumpPlatform) {
+			HandleJumpPlatform();
+		}
+	}
+
+	private void HandleJumpPlatform () {
 		velocity.y = maxJumpVelocity * 1.5f;
 		jumping = true;
 		camEffects.ApplyCameraShake();
@@ -286,5 +313,8 @@ public class Player : MonoBehaviour {
 		jumping = onLeftWall = onRightWall = false;
 		controller.collInfo.below = false;
 		velocity = Vector2.zero;
+
+		onPlayerReset.Invoke();
 	}
+
 }
