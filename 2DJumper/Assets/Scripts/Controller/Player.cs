@@ -75,7 +75,8 @@ public class Player : MonoBehaviour {
 	private bool jumpInputDown;
 	private bool jumpInputUp;
 	private bool jumping;
-	private bool applyJumpQueue; 
+	private bool applyJumpQueue;
+	private bool grounded;
 
 	void Start() {
 		controller = GetComponent<Controller2D>();
@@ -94,10 +95,13 @@ public class Player : MonoBehaviour {
 	void Update () {
 		GetInput();
 
+		// Check if the player is grounded based on collision info from last frame
+		grounded = controller.collInfo.below;
+
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
 
 		if (jumpInputDown ||
-			(applyJumpQueue && (controller.collInfo.below || ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below))))
+			(applyJumpQueue && (grounded || ((controller.collInfo.left || controller.collInfo.right) && !grounded))))
 		{
 			HandleJump();
 		}
@@ -148,14 +152,14 @@ public class Player : MonoBehaviour {
 		jumping = false;
 
 		// Standrad Jump
-		if (controller.collInfo.below) {
+		if (grounded) {
 			velocity.y = maxJumpVelocity;
 			jumping = true;
 
 			onGroundJump.Invoke();
 		}
 		// Some sort of wall jump
-		else if ((controller.collInfo.left || controller.collInfo.right) && !controller.collInfo.below) {
+		else if ((controller.collInfo.left || controller.collInfo.right) && !grounded) {
 			// Jump vertically up wall
 			if (grabWall && (moveX == 0 || (moveX < 0f && controller.collInfo.left) || (moveX > 0f && controller.collInfo.right))) {
 				velocity.x = 0;
@@ -184,10 +188,10 @@ public class Player : MonoBehaviour {
 		bool grabWallInput = Input.GetAxis("LT") == 0 ? false : true;
 
 		if (grabWallInput && (controller.collInfo.left || controller.collInfo.right) && canMove) {
-			if (!controller.collInfo.below) {
+			if (!grounded) {
 				wallGrabStamina += Time.deltaTime;
 			}
-			else if (controller.collInfo.below) {
+			else if (grounded) {
 				wallGrabStamina = 0.0f;
 			}
 
@@ -210,10 +214,10 @@ public class Player : MonoBehaviour {
 		if (velocity.y < 0) {
 			velocity.y += (gravity - gravityFallMultiplier) * Time.deltaTime;
 		}
-		else if (jumping || !controller.collInfo.grounded) {
+		else if (jumping || !grounded) {
 			velocity.y += gravity * Time.deltaTime;
 		}
-		else if (controller.collInfo.grounded) {
+		else if (grounded) {
 			velocity.y = 0;
 		}
 	}
@@ -222,11 +226,11 @@ public class Player : MonoBehaviour {
 		float targetVelocityX = moveX * moveSpeed;
 		if (targetVelocityX != 0) {
 			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-				(controller.collInfo.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+				(grounded) ? accelerationTimeGrounded : accelerationTimeAirborne);
 		}
 		else {
 			velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocitySmoothing,
-				(controller.collInfo.below) ? decelerationTimeGrounded : decelerationTimeAirborne);
+				(grounded) ? decelerationTimeGrounded : decelerationTimeAirborne);
 		}
 	}
 
@@ -234,7 +238,7 @@ public class Player : MonoBehaviour {
 		wallSliding = false;
 
 		if ((controller.collInfo.left && moveX == -1 || controller.collInfo.right && moveX == 1) &&
-			!controller.collInfo.below && velocity.y < 0) {
+			!grounded && velocity.y < 0) {
 			wallSliding = true;
 
 			if (velocity.y < -wallSlideSpeed) {
@@ -253,7 +257,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private void HandleStickyWallDelay () {
-		if ((controller.collInfo.right || controller.collInfo.left) && !controller.collInfo.below && velocity.y < 0) {
+		if ((controller.collInfo.right || controller.collInfo.left) && !grounded && velocity.y < 0) {
 			if (timeToWallUnstick > 0) {
 				velocitySmoothing = 0;
 				velocity.x = 0;

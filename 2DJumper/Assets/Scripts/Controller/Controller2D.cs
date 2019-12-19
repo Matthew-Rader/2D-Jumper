@@ -28,7 +28,7 @@ public class Controller2D :	RaycastController
 		base.Start();
 
 		collInfo.movementDirection = 1;
-		collInfo.groundedLastFrame = false;
+		collInfo.belowLastFrame = false;
 	}
 
 	public void Move (Vector2 movementDistance, bool standingOnPlatform) {
@@ -232,7 +232,7 @@ public class Controller2D :	RaycastController
 
 			collInfo.above = directionY == 1;
 			collInfo.below = directionY == -1;
-			collInfo.grounded = true;
+			collInfo.belowLastFrame = true;
 		}
 		else {
 			LedgeDetection(ref movementDistance);
@@ -257,7 +257,6 @@ public class Controller2D :	RaycastController
 			if (hit) {
 				movementDistance.y = 0;
 				collInfo.below = true;
-				collInfo.grounded = true;
 				collInfo.overEdge = true;
 			}
 		}
@@ -271,6 +270,7 @@ public class Controller2D :	RaycastController
 	{
 		public bool above, below;
 		public bool left, right;
+		public bool belowLastFrame;
 
 		public bool climbingSlope, descendingSlope;
 		public float slopeAngle, slopeAngleOld;
@@ -278,8 +278,6 @@ public class Controller2D :	RaycastController
 		public bool fallingThroughPlatform;
 
 		public int movementDirection;
-		public bool grounded;
-		public bool groundedLastFrame;
 
 		public bool onEdge;
 		public bool overEdge;
@@ -297,7 +295,6 @@ public class Controller2D :	RaycastController
 			slopeAngle = 0;
 			onEdge = false;
 			overEdge = false;
-			grounded = false;
 			touchedHazard = false;
 			hitJumpPlatform = false;
 		}
