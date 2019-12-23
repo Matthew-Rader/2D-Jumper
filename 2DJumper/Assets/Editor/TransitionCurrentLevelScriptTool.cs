@@ -3,8 +3,8 @@ using UnityEditor;
 
 [CustomEditor(typeof(TransitionCurrentLevel))]
 public class TransitionCurrentLevelScriptTool : Editor {
-	int levelASpawnPointIndex;
-	int levelBSpawnPointIndex;
+	int levelASpawnPointIndex = 0;
+	int levelBSpawnPointIndex = 0;
 
 	public override void OnInspectorGUI () {
 		DrawDefaultInspector();
@@ -33,8 +33,7 @@ public class TransitionCurrentLevelScriptTool : Editor {
 					"Spawn Point Level A",
 					levelASpawnPointIndex,
 					levelASpawnPointNames);
-
-				transitionPointScript.SetLevelSpawnPoint('a', levelASpawnPointIndex);
+			
 			}
 			else {
 				EditorGUILayout.LabelField("Spawn Point Level A", "No Spawn Points Found!");
@@ -56,12 +55,16 @@ public class TransitionCurrentLevelScriptTool : Editor {
 					"Spawn Point Level B",
 					levelBSpawnPointIndex,
 					levelBSpawnPointNames);
-
-				transitionPointScript.SetLevelSpawnPoint('b', levelBSpawnPointIndex);
+				
 			}
 			else {
 				EditorGUILayout.LabelField("Spawn Point Level B", "No Spawn Points Found!");
 			}
+		}
+
+		if (GUILayout.Button("Set SpawnPoints")) {
+			transitionPointScript.SetLevelSpawnPoint('a', levelASpawnPointIndex);
+			transitionPointScript.SetLevelSpawnPoint('b', levelBSpawnPointIndex);
 		}
 	}
 }

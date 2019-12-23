@@ -25,7 +25,9 @@ public class TransitionCurrentLevel : MonoBehaviour {
 	public List<Transform> spawnPointsA = new List<Transform>();
 	public List<Transform> spawnPointsB = new List<Transform>();
 	public Transform choosenSpawnPointA;
+	public int choosenSpawnPointAIndex = 0;
 	public Transform choosenSpawnPointB;
+	public int choosenSpawnPointBIndex = 0;
 
 	private const float _coroutinePauseTime = 0.25f;
 	private const float _playerTransitionHorizontalDistance = 3f;
@@ -182,9 +184,11 @@ public class TransitionCurrentLevel : MonoBehaviour {
 		switch (level) {
 			case 'a':
 				choosenSpawnPointA = spawnPointsA[index];
+				choosenSpawnPointAIndex = index;
 				break;
 			case 'b':
 				choosenSpawnPointB = spawnPointsB[index];
+				choosenSpawnPointBIndex = index;
 				break;
 		}
 	}

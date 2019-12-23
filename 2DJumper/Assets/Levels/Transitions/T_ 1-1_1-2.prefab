@@ -328,13 +328,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9e148528b9e2564aa718355aa733a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPointA: {fileID: 0}
-  noSpawnPointA: 0
-  spawnPointB: {fileID: 0}
-  noSpawnPointB: 0
   levelA: {fileID: 0}
   levelB: {fileID: 0}
   verticalTransition: 0
+  noSpawnPointA: 0
+  noSpawnPointB: 0
+  spawnPointsA:
+  - {fileID: 0}
+  - {fileID: 0}
+  spawnPointsB:
+  - {fileID: 0}
+  - {fileID: 0}
+  choosenSpawnPointA: {fileID: 0}
+  choosenSpawnPointAIndex: 0
+  choosenSpawnPointB: {fileID: 0}
+  choosenSpawnPointBIndex: 0
 --- !u!1 &7500696931030859335
 GameObject:
   m_ObjectHideFlags: 0
