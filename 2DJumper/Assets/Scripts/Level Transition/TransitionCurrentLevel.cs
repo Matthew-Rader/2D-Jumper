@@ -35,18 +35,6 @@ public class TransitionCurrentLevel : MonoBehaviour {
 
 	void Awake()
 	{
-		//if (spawnPointA == null && !noSpawnPointA)
-		//{
-		//	Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointA");
-		//	UnityEditor.EditorApplication.isPlaying = false;
-		//}
-
-		//if (spawnPointB == null && !noSpawnPointB)
-		//{
-		//	Debug.LogError("TransitionCurrentLevel is missing requiered reference spawnPointB");
-		//	UnityEditor.EditorApplication.isPlaying = false;
-		//}
-
 		if (levelA == null)
 		{
 			Debug.LogError("TransitionCurrentLevel is missing requiered reference levelA");

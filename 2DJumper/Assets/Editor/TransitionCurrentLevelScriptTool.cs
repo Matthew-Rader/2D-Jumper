@@ -65,10 +65,10 @@ public class TransitionCurrentLevelScriptTool : Editor {
 				newSpawnPointIndex,
 				spawnPointNames);
 
-			Undo.RecordObject(this, "Setting Spawn Point " + levelName);
+			Undo.RecordObject(transitionScript, "Setting Spawn Point " + levelName);
 			choosenSpawnPoint = levelSpawnPoints[newSpawnPointIndex];
 			choosenSpawnPointIndex = newSpawnPointIndex;
-			EditorUtility.SetDirty(this);
+			EditorUtility.SetDirty(transitionScript);
 
 		}
 		else {
@@ -95,23 +95,23 @@ public class TransitionCurrentLevelScriptTool : Editor {
 		return true;
 	}
 
-	void GrabLevelSpawnPoints (TransitionCurrentLevel transitionPointScript) {
+	void GrabLevelSpawnPoints (TransitionCurrentLevel transitionScript) {
 		Debug.Log("Grabbing SpawnPoints");
 
-		foreach (Transform child in transitionPointScript.levelA.transform) {
+		foreach (Transform child in transitionScript.levelA.transform) {
 			if (child.CompareTag("SpawnPointParent")) {
-				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.spawnPointsLevelA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
-				EditorUtility.SetDirty(this);
+				Undo.RecordObject(transitionScript, "Some Random Text");
+				transitionScript.spawnPointsLevelA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				EditorUtility.SetDirty(transitionScript);
 				break;
 			}
 		}
 
-		foreach (Transform child in transitionPointScript.levelB.transform) {
+		foreach (Transform child in transitionScript.levelB.transform) {
 			if (child.CompareTag("SpawnPointParent")) {
-				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.spawnPointsLevelB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
-				EditorUtility.SetDirty(this);
+				Undo.RecordObject(transitionScript, "Some Random Text");
+				transitionScript.spawnPointsLevelB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				EditorUtility.SetDirty(transitionScript);
 				break;
 			}
 		}
