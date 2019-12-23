@@ -2330,10 +2330,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1986967398, guid: 84d4f120612ffe843bd96237a878e208, type: 3}
-      propertyPath: m_TileAssetArray.Array.data[0].m_Data
-      value: 
-      objectReference: {fileID: 1596512940}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84d4f120612ffe843bd96237a878e208, type: 3}
 --- !u!1001 &7500696931012865059
@@ -2405,6 +2401,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7500696930330114253, guid: 34e0cb3efda902846a1f325465cc078d,
         type: 3}
+      propertyPath: spawnPointsB.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7500696930330114253, guid: 34e0cb3efda902846a1f325465cc078d,
+        type: 3}
       propertyPath: levelA
       value: 
       objectReference: {fileID: 184389320}
@@ -2413,16 +2414,6 @@ PrefabInstance:
       propertyPath: levelB
       value: 
       objectReference: {fileID: 1801265451}
-    - target: {fileID: 7500696930330114253, guid: 34e0cb3efda902846a1f325465cc078d,
-        type: 3}
-      propertyPath: spawnPointsA.Array.data[0]
-      value: 
-      objectReference: {fileID: 1046554837}
-    - target: {fileID: 7500696930330114253, guid: 34e0cb3efda902846a1f325465cc078d,
-        type: 3}
-      propertyPath: spawnPointsA.Array.data[1]
-      value: 
-      objectReference: {fileID: 1658552600}
     - target: {fileID: 7500696930330114253, guid: 34e0cb3efda902846a1f325465cc078d,
         type: 3}
       propertyPath: spawnPointsB.Array.data[0]

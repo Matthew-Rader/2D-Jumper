@@ -24,10 +24,10 @@ public class TransitionCurrentLevel : MonoBehaviour {
 
 	public List<Transform> spawnPointsA = new List<Transform>();
 	public List<Transform> spawnPointsB = new List<Transform>();
-	public Transform choosenSpawnPointA;
-	public int choosenSpawnPointAIndex = 0;
-	public Transform choosenSpawnPointB;
-	public int choosenSpawnPointBIndex = 0;
+	[SerializeField] public Transform choosenSpawnPointA;
+	[SerializeField] public int choosenSpawnPointAIndex = 0;
+	[SerializeField] public Transform choosenSpawnPointB;
+	[SerializeField] public int choosenSpawnPointBIndex = 0;
 
 	private const float _coroutinePauseTime = 0.25f;
 	private const float _playerTransitionHorizontalDistance = 3f;
@@ -163,33 +163,4 @@ public class TransitionCurrentLevel : MonoBehaviour {
 		playerController.enabled = true;
 	}
 
-	// Used by the tool extension 
-	public void GrabLevelSpawnPoints () {
-		foreach (Transform child in levelA.transform) {
-			if (child.CompareTag("SpawnPointParent")) {
-				spawnPointsA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
-				break;
-			}
-		}
-
-		foreach (Transform child in levelB.transform) {
-			if (child.CompareTag("SpawnPointParent")) {
-				spawnPointsB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
-				break;
-			}
-		}
-	}
-
-	public void SetLevelSpawnPoint (char level, int index) {
-		switch (level) {
-			case 'a':
-				choosenSpawnPointA = spawnPointsA[index];
-				choosenSpawnPointAIndex = index;
-				break;
-			case 'b':
-				choosenSpawnPointB = spawnPointsB[index];
-				choosenSpawnPointBIndex = index;
-				break;
-		}
-	}
 }
