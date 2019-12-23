@@ -1,18 +1,17 @@
-﻿using System.Collections;
+﻿// This script is in charage of updating the gamemanger and letting it know
+// the player has transitioned to a new level. It does this by updating the 
+// player spawn point and the known current level.
+// This script has a tool has an associated tool script name 
+// TransitionsCurrentLevelScriptTool which creates the DropDowns 
+// and GrabLevelSpawnPoints button for spawn point selection.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.Events;
 
 public class TransitionCurrentLevel : MonoBehaviour {
-	// This script is in charage of updating the gamemanger and letting it know
-	// the player has transitioned to a new level. It does this by updating the 
-	// player spawn point and the known current level.
-
-	//[SerializeField] private GameObject spawnPointA;
-
-	//[SerializeField] private GameObject spawnPointB;
-
 	[SerializeField] public GameObject levelA;
 	[SerializeField] public GameObject levelB;
 	[SerializeField] private bool verticalTransition = false;
@@ -22,8 +21,8 @@ public class TransitionCurrentLevel : MonoBehaviour {
 	private CinemachineVirtualCamera cameraB;
 	private GameManager gameManager;
 
-	public List<Transform> spawnPointsA = new List<Transform>();
-	public List<Transform> spawnPointsB = new List<Transform>();
+	public List<Transform> spawnPointsLevelA = new List<Transform>();
+	public List<Transform> spawnPointsLevelB = new List<Transform>();
 	[SerializeField] public Transform choosenSpawnPointA;
 	[SerializeField] public int choosenSpawnPointAIndex = 0;
 	[SerializeField] public Transform choosenSpawnPointB;

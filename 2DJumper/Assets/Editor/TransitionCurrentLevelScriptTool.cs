@@ -1,124 +1,107 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(TransitionCurrentLevel))]
 public class TransitionCurrentLevelScriptTool : Editor {
-	[SerializeField] int levelASpawnPointIndex = 0;
-	[SerializeField] int levelBSpawnPointIndex = 0;
+	[SerializeField] int newSpawnPointIndex = 0;
+	enum Level { LevelA, LevelB }
 
 	public override void OnInspectorGUI () {
 		DrawDefaultInspector();
 
 		EditorGUILayout.Space();
 
-		TransitionCurrentLevel transitionPointScript = (TransitionCurrentLevel)target;
+		TransitionCurrentLevel transitionScript = (TransitionCurrentLevel)target;
 
 		if (GUILayout.Button("Grab Level SpawnPoints")) {
 			Debug.Log("Grab spawnpoints button");
-			/*transitionPointScript.*/GrabLevelSpawnPoints(transitionPointScript);
+			GrabLevelSpawnPoints(transitionScript);
 		}
 
 		EditorGUILayout.Space();
 
-		if (!transitionPointScript.noSpawnPointA) {
-			if (transitionPointScript.spawnPointsA.Count == 0) {
-				Debug.Log("Grab spawnpoints Level A count equals 0");
-				/*transitionPointScript.*/GrabLevelSpawnPoints(transitionPointScript);
-				return;
-			}
+		if (!transitionScript.noSpawnPointA) {
+			Level level = Level.LevelA;
+			List<Transform> levelSpawnPoints = transitionScript.spawnPointsLevelA;
 
-			int levelASpawnPointCount = transitionPointScript.spawnPointsA.Count;
-
-			string[] levelASpawnPointNames = new string[levelASpawnPointCount];
-
-			for (int i = 0; i < levelASpawnPointCount; ++i) {
-				if (transitionPointScript.spawnPointsA[i] != null) {
-					levelASpawnPointNames[i] = transitionPointScript.spawnPointsA[i].name;
-				}
-				else {
-					Debug.Log("Grab spawnpoints Level A index null");
-					/*transitionPointScript.*/GrabLevelSpawnPoints(transitionPointScript);
-					return;
-				}
-			}
-
-			if (levelASpawnPointNames.Length > 0) {
-				//Debug.Log(levelASpawnPointIndex);
-				levelASpawnPointIndex = transitionPointScript.choosenSpawnPointAIndex;
-
-				levelASpawnPointIndex = EditorGUILayout.Popup(
-					"Spawn Point Level A",
-					levelASpawnPointIndex,
-					levelASpawnPointNames);
-
-				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.choosenSpawnPointA = transitionPointScript.spawnPointsA[levelASpawnPointIndex];
-				transitionPointScript.choosenSpawnPointAIndex = levelASpawnPointIndex;
-				EditorUtility.SetDirty(this);
-
-			}
-			else {
-				EditorGUILayout.LabelField("Spawn Point Level A", "No Spawn Points Found!");
+			if (CheckIfThereAreSpawnPoints(transitionScript, level, levelSpawnPoints)) {
+				CreateSpawnPointPopupTool(transitionScript, level, levelSpawnPoints, ref transitionScript.choosenSpawnPointA, ref transitionScript.choosenSpawnPointAIndex);
 			}
 		}
 
-		if (!transitionPointScript.noSpawnPointB) {
-			if (transitionPointScript.spawnPointsB.Count == 0) {
-				Debug.Log("Grab spawnpoints Level B count equals 0");
-				/*transitionPointScript.*/GrabLevelSpawnPoints(transitionPointScript);
-				return;
-			}
+		if (!transitionScript.noSpawnPointB) {
+			Level level = Level.LevelA;
+			List<Transform> levelSpawnPoints = transitionScript.spawnPointsLevelB;
 
-			int levelBSpawnPointCount = transitionPointScript.spawnPointsB.Count;
-
-			string[] levelBSpawnPointNames = new string[levelBSpawnPointCount];
-
-			for (int i = 0; i < levelBSpawnPointCount; ++i) {
-				if (transitionPointScript.spawnPointsB[i] != null) {
-					levelBSpawnPointNames[i] = transitionPointScript.spawnPointsB[i].name;
-				}
-				else {
-					Debug.Log("Grab spawnpoints Level B index null");
-					/*transitionPointScript.*/GrabLevelSpawnPoints(transitionPointScript);
-					return;
-				}
-			}
-
-			// Create the popup boxes to select Level A an B's spawn point
-			if (levelBSpawnPointNames.Length > 0) {
-				levelBSpawnPointIndex = transitionPointScript.choosenSpawnPointBIndex;
-
-				levelBSpawnPointIndex = EditorGUILayout.Popup(
-					"Spawn Point Level B",
-					levelBSpawnPointIndex,
-					levelBSpawnPointNames);
-
-				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.choosenSpawnPointB = transitionPointScript.spawnPointsB[levelBSpawnPointIndex];
-				transitionPointScript.choosenSpawnPointBIndex = levelBSpawnPointIndex;
-				EditorUtility.SetDirty(this);
-
-			}
-			else {
-				EditorGUILayout.LabelField("Spawn Point Level B", "No Spawn Points Found!");
+			if (CheckIfThereAreSpawnPoints(transitionScript, level, levelSpawnPoints)) {
+				CreateSpawnPointPopupTool(transitionScript, level, levelSpawnPoints, ref transitionScript.choosenSpawnPointB, ref transitionScript.choosenSpawnPointBIndex);
 			}
 		}
-
-		//if (GUILayout.Button("Set SpawnPoints")) {
-		//	Undo.RecordObject(this, "Some Random Text");
-		//	transitionPointScript.SetLevelSpawnPoint('a', levelASpawnPointIndex);
-		//	transitionPointScript.SetLevelSpawnPoint('b', levelBSpawnPointIndex);
-		//	EditorUtility.SetDirty(this);
-		//}
 	}
 
-	public void GrabLevelSpawnPoints (TransitionCurrentLevel transitionPointScript) {
+	void CreateSpawnPointPopupTool (TransitionCurrentLevel transitionScript, Level level, List<Transform> levelSpawnPoints, ref Transform choosenSpawnPoint, ref int choosenSpawnPointIndex) {
+		string levelName = (level == Level.LevelA) ? "Level A" : "Level B";
+		int spawnPointCount = levelSpawnPoints.Count;
+		string[] spawnPointNames = new string[spawnPointCount];
+
+		for (int i = 0; i < spawnPointCount; ++i) {
+			if (levelSpawnPoints[i] != null) {
+				spawnPointNames[i] = levelSpawnPoints[i].name;
+			}
+			else {
+				Debug.LogError("Grab spawnpoints " + levelName + ": index null");
+				GrabLevelSpawnPoints(transitionScript);
+				return;
+			}
+		}
+
+		// Create the popup boxes to select Level A and B's spawn point
+		if (spawnPointNames.Length > 0) {
+			newSpawnPointIndex = choosenSpawnPointIndex;
+
+			newSpawnPointIndex = EditorGUILayout.Popup(
+				"Spawn Point " + levelName,
+				newSpawnPointIndex,
+				spawnPointNames);
+
+			Undo.RecordObject(this, "Setting Spawn Point " + levelName);
+			choosenSpawnPoint = levelSpawnPoints[newSpawnPointIndex];
+			choosenSpawnPointIndex = newSpawnPointIndex;
+			EditorUtility.SetDirty(this);
+
+		}
+		else {
+			EditorGUILayout.LabelField("Spawn Point " + levelName, "No Spawn Points Found!");
+		}
+	}
+
+	bool CheckIfThereAreSpawnPoints (TransitionCurrentLevel transitionScript, Level level, List<Transform> levelSpawnPoints) {
+		string levelName = (level == Level.LevelA) ? "Level A" : "Level B";
+
+		// Since we are calling this function we should be expecting spawnpoints, if 
+		// the count is zero then try to gather the necessary spawnpoints
+		if (levelSpawnPoints.Count == 0) {
+			Debug.LogError("Grab spawnpoints " + levelName + ": count equals 0");
+			GrabLevelSpawnPoints(transitionScript);
+
+			// Check to see if we have found the spawn points, else return
+			if (levelSpawnPoints.Count == 0) {
+				Debug.LogError("No spawnpoints found for " + levelName);
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	void GrabLevelSpawnPoints (TransitionCurrentLevel transitionPointScript) {
 		Debug.Log("Grabbing SpawnPoints");
 
 		foreach (Transform child in transitionPointScript.levelA.transform) {
 			if (child.CompareTag("SpawnPointParent")) {
 				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.spawnPointsA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				transitionPointScript.spawnPointsLevelA = child.GetComponent<LevelSpawnPoints>().spawnPoints;
 				EditorUtility.SetDirty(this);
 				break;
 			}
@@ -127,7 +110,7 @@ public class TransitionCurrentLevelScriptTool : Editor {
 		foreach (Transform child in transitionPointScript.levelB.transform) {
 			if (child.CompareTag("SpawnPointParent")) {
 				Undo.RecordObject(this, "Some Random Text");
-				transitionPointScript.spawnPointsB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
+				transitionPointScript.spawnPointsLevelB = child.GetComponent<LevelSpawnPoints>().spawnPoints;
 				EditorUtility.SetDirty(this);
 				break;
 			}
