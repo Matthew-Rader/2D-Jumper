@@ -24,9 +24,9 @@ public class TransitionCurrentLevel : MonoBehaviour {
 	public List<Transform> spawnPointsLevelA = new List<Transform>();
 	public List<Transform> spawnPointsLevelB = new List<Transform>();
 	[SerializeField] public Transform choosenSpawnPointA;
-	[SerializeField] public int choosenSpawnPointAIndex = 0;
+	[SerializeField] public int choosenSpawnPointAIndex = -1;
 	[SerializeField] public Transform choosenSpawnPointB;
-	[SerializeField] public int choosenSpawnPointBIndex = 0;
+	[SerializeField] public int choosenSpawnPointBIndex = -1;
 
 	private const float _coroutinePauseTime = 0.25f;
 	private const float _playerTransitionHorizontalDistance = 3f;
