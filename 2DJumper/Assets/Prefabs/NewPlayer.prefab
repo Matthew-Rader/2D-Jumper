@@ -145,7 +145,7 @@ SpriteRenderer:
   m_SortingLayerID: 1757972189
   m_SortingLayer: 5
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: dab3c2848f5064044b061ced561483c9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 07b7cf8b3060e29468a07dfb197a5608, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -173,14 +173,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 2}
+    oldSize: {x: 1, y: 1.5}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1, y: 1.5}
   m_EdgeRadius: 0
 --- !u!114 &1305093374654654084
 MonoBehaviour:
@@ -222,8 +222,9 @@ MonoBehaviour:
   maxJumpHeight: 2.8
   minJumpHeight: 1
   timeToJumpApex: 0.25
-  wallJumpAway: {x: 17, y: 17}
-  wallJumpUp: 15
+  wallJumpAway: {x: 25, y: 15}
+  wallJumpUp: {x: 16, y: 20}
+  wallGrabJump: 15
   wallJumpAwayControlDelay: 0.15
   jumpQueueTimer: 0.15
   gravityFallMultiplier: 10
@@ -251,12 +252,17 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  onWallGrabJump:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   onWallJumpAway:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  onWallJumpVertical:
+  onWallJumpUp:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,

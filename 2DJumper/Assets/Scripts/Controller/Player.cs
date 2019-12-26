@@ -28,9 +28,10 @@ public class Player : MonoBehaviour {
 	[SerializeField] private float maxJumpHeight = 2.25f;
 	[SerializeField] private float minJumpHeight = 1.0f;
 	[SerializeField] private float timeToJumpApex = 0.25f;
-	[SerializeField] private Vector2 wallJumpAway = new Vector2(17.0f, 17.5f);
+	[SerializeField] private Vector2 wallJumpAway = new Vector2(50.0f, 10.0f);
+	[SerializeField] private Vector2 wallJumpUp = new Vector2(16.0f, 20.0f);
 	//[SerializeField] private Vector2 wallJumpClimb;
-	[SerializeField] private float wallJumpUp = 15.0f;
+	[SerializeField] private float wallGrabJump = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
 	[SerializeField] private float jumpQueueTimer = 0.15f;
 
@@ -48,8 +49,9 @@ public class Player : MonoBehaviour {
 	// Should call DeathFade.StartDeathFadeCoroutine()
 	public UnityEvent touchedHazard;
 	public UnityEvent onGroundJump;
+	public UnityEvent onWallGrabJump;
 	public UnityEvent onWallJumpAway;
-	public UnityEvent onWallJumpVertical;
+	public UnityEvent onWallJumpUp;
 	public UnityEvent onMove;
 	public UnityEvent onPlayerReset;
 
@@ -163,12 +165,13 @@ public class Player : MonoBehaviour {
 			// Jump vertically up wall
 			if (grabWall && (moveX == 0 || (moveX < 0f && controller.collInfo.left) || (moveX > 0f && controller.collInfo.right))) {
 				velocity.x = 0;
-				velocity.y = wallJumpUp;
+				velocity.y = wallGrabJump;
 				jumping = true;
 
-				onWallJumpVertical.Invoke();
+				onWallGrabJump.Invoke();
 			}
-			else {
+			// Jump away from a wall
+			else if (moveX != wallDirX) {
 				StopCoroutine(DisableMovementWallJumpOff(0));
 				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
 
@@ -177,6 +180,17 @@ public class Player : MonoBehaviour {
 				jumping = true;
 
 				onWallJumpAway.Invoke();
+			}
+			// Jump up a wall
+			else {
+				StopCoroutine(DisableMovementWallJumpOff(0));
+				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
+
+				velocity.x = -wallDirX * wallJumpUp.x;
+				velocity.y = wallJumpUp.y;
+				jumping = true;
+
+				onWallJumpUp.Invoke();
 			}
 		}
 		else if (!applyJumpQueue) {

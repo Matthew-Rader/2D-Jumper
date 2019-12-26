@@ -452,16 +452,6 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 871776812}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: wallJumpAway.y
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
-        type: 3}
-      propertyPath: wallJumpAway.x
-      value: 16
-      objectReference: {fileID: 0}
     - target: {fileID: 1305093374695746707, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
         type: 3}
       propertyPath: fadeAnim
