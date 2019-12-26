@@ -200,6 +200,7 @@ MonoBehaviour:
   hazardCollisionMask:
     serializedVersion: 2
     m_Bits: 2048
+  allowPassablePlatforms: 0
 --- !u!114 &1305093374654654085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,12 +214,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  moveSpeed: 9.75
+  moveSpeed: 10
   accelerationTimeAirborne: 0.1
   decelerationTimeAirborne: 0.1
   accelerationTimeGrounded: 0.15
   decelerationTimeGrounded: 0.05
-  maxJumpHeight: 2.75
+  maxJumpHeight: 2.8
   minJumpHeight: 1
   timeToJumpApex: 0.25
   wallJumpAway: {x: 17, y: 17}
@@ -243,6 +244,31 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onGroundJump:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onWallJumpAway:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onWallJumpVertical:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onMove:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onPlayerReset:
+    m_PersistentCalls:
+      m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1305093374695746707

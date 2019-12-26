@@ -374,6 +374,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2063353336309435413}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1911298237 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1305093374654654082, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1305093374695746705}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1305093374695746705
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -446,6 +452,16 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 871776812}
+    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
+        type: 3}
+      propertyPath: wallJumpAway.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1305093374654654085, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
+        type: 3}
+      propertyPath: wallJumpAway.x
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 1305093374695746707, guid: cd9951a4b356e5140aa2f0ce8bbac2e7,
         type: 3}
       propertyPath: fadeAnim
@@ -570,6 +586,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2063353336465045892, guid: 129440aa70f80a64bb46a6d2e3997b51,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.6839714
+      objectReference: {fileID: 0}
+    - target: {fileID: 2063353336465045895, guid: 129440aa70f80a64bb46a6d2e3997b51,
+        type: 3}
+      propertyPath: m_Follow
+      value: 
+      objectReference: {fileID: 1911298237}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 129440aa70f80a64bb46a6d2e3997b51, type: 3}
 --- !u!1001 &3422927381795950290

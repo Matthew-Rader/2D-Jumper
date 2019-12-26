@@ -11,6 +11,7 @@ public class Controller2D :	RaycastController
 	[SerializeField] private LayerMask hazardCollisionMask;
 	public CollisionInfo collInfo;
 	Vector2 playerInput;
+	public bool allowPassablePlatforms = false;
 
 	struct ClosestRayHit {
 		public float distance;
@@ -211,7 +212,7 @@ public class Controller2D :	RaycastController
 
 		if (terrainDetected) {
 			// Check for passable platforms
-			if (closestTerrainHit.colliderTag == "Passable Platform") {
+			if (closestTerrainHit.colliderTag == "Passable Platform" && allowPassablePlatforms) {
 				if (directionY == 1 || closestTerrainHit.distance == 0 || collInfo.fallingThroughPlatform) {
 					return;
 				}
