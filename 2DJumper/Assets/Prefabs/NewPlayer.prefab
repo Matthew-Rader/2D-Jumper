@@ -222,11 +222,12 @@ MonoBehaviour:
   maxJumpHeight: 2.8
   minJumpHeight: 1
   timeToJumpApex: 0.25
-  wallJumpAway: {x: 25, y: 15}
+  wallJumpAway: {x: 22, y: 16.5}
   wallJumpUp: {x: 16, y: 20}
   wallGrabJump: 15
   wallJumpAwayControlDelay: 0.15
   jumpQueueTimer: 0.15
+  coyoteJumpTimer: 0.25
   gravityFallMultiplier: 10
   wallSlideSpeed: 1.5
   wallClimbSpeed: 4.5
@@ -273,6 +274,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   onPlayerReset:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onLandingOnGround:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,

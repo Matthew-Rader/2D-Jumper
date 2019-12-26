@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Controller2D :	RaycastController
 {
-	float maxClimbAngle = 50f;
-	float maxDescendAngle = 75f;
-	bool grounded;
+	// Formerly used slope detection variables
+	//float maxClimbAngle = 50f;
+	//float maxDescendAngle = 75f;
 
 	[SerializeField] private LayerMask hazardCollisionMask;
+	[SerializeField] private bool allowPassablePlatforms = false;
 	public CollisionInfo collInfo;
 	Vector2 playerInput;
-	public bool allowPassablePlatforms = false;
 
 	struct ClosestRayHit {
 		public float distance;
@@ -30,6 +30,7 @@ public class Controller2D :	RaycastController
 
 		collInfo.movementDirection = 1;
 		collInfo.belowLastFrame = false;
+		collInfo.coyoteJumpPossible = false;
 	}
 
 	public void Move (Vector2 movementDistance, bool standingOnPlatform) {
@@ -233,11 +234,15 @@ public class Controller2D :	RaycastController
 
 			collInfo.above = directionY == 1;
 			collInfo.below = directionY == -1;
-			collInfo.belowLastFrame = true;
+			collInfo.belowLastFrame = collInfo.below ? true : false;
 		}
-		else {
-			LedgeDetection(ref movementDistance);
+		else if (collInfo.belowLastFrame && !collInfo.below) {
+			collInfo.belowLastFrame = false;
+			collInfo.timeLeftGround = Time.time;
 		}
+		//else {
+		//	LedgeDetection(ref movementDistance);
+		//}
 	}
 
 	void LedgeDetection (ref Vector2 movementDistance) {
@@ -272,6 +277,8 @@ public class Controller2D :	RaycastController
 		public bool above, below;
 		public bool left, right;
 		public bool belowLastFrame;
+		public bool coyoteJumpPossible;
+		public float timeLeftGround;
 
 		public bool climbingSlope, descendingSlope;
 		public float slopeAngle, slopeAngleOld;

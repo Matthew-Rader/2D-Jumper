@@ -34,6 +34,7 @@ public class Player : MonoBehaviour {
 	[SerializeField] private float wallGrabJump = 15.0f;
 	[SerializeField] private float wallJumpAwayControlDelay = 0.15f;
 	[SerializeField] private float jumpQueueTimer = 0.15f;
+	[SerializeField] private float coyoteJumpTimer = 1.0f;
 
 	[Header("Better Jumping Gravity Multiplier")]
 	[SerializeField] private float gravityFallMultiplier = 10;
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour {
 	public UnityEvent onWallJumpUp;
 	public UnityEvent onMove;
 	public UnityEvent onPlayerReset;
+	public UnityEvent onLandingOnGround;
 
 	// PRIVATE VARIABLES
 	private float moveX, moveY;
@@ -70,14 +72,13 @@ public class Player : MonoBehaviour {
 	private bool canMove = true;
 	private int wallDirX;
 	private bool onLeftWall, onRightWall;
-
 	private float timeToWallUnstick;
 	private float wallStickTime = 0.15f;
-
 	private bool jumpInputDown;
 	private bool jumpInputUp;
 	private bool jumping;
 	private bool applyJumpQueue;
+	private bool canCoyoteJump;
 	private bool grounded;
 
 	void Start() {
@@ -98,9 +99,11 @@ public class Player : MonoBehaviour {
 		GetInput();
 
 		// Check if the player is grounded based on collision info from last frame
-		grounded = controller.collInfo.below;
+		CheckForGrounded();
 
 		wallDirX = (controller.collInfo.left) ? -1 : 1;
+
+		DetermineIfCanCoyoteJump();
 
 		if (jumpInputDown ||
 			(applyJumpQueue && (grounded || ((controller.collInfo.left || controller.collInfo.right) && !grounded))))
@@ -150,11 +153,35 @@ public class Player : MonoBehaviour {
 		jumpInputUp = (Input.GetButtonUp("Jump")) ? true : false;
 	}
 
-	private void HandleJump() {
-		jumping = false;
+	private void CheckForGrounded () {
+		if (!grounded && controller.collInfo.below) {
+			onLandingOnGround.Invoke();
+		}
 
+		grounded = controller.collInfo.below;
+	}
+
+	private void DetermineIfCanCoyoteJump () {
+		if (!grounded && !onLeftWall && !onRightWall && !jumping && velocity.y < 0f &&
+			(Time.time <= (controller.collInfo.timeLeftGround + coyoteJumpTimer))) {
+			canCoyoteJump = true;
+		}
+		else {
+			canCoyoteJump = false;
+		}
+	}
+
+	private void HandleJump() {
 		// Standrad Jump
 		if (grounded) {
+			velocity.y = maxJumpVelocity;
+			jumping = true;
+
+			onGroundJump.Invoke();
+		}
+		else if (canCoyoteJump) {
+			// Debug.Log("coyoteJump");
+
 			velocity.y = maxJumpVelocity;
 			jumping = true;
 
@@ -170,19 +197,10 @@ public class Player : MonoBehaviour {
 
 				onWallGrabJump.Invoke();
 			}
-			// Jump away from a wall
-			else if (moveX != wallDirX) {
-				StopCoroutine(DisableMovementWallJumpOff(0));
-				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
-
-				velocity.x = -wallDirX * wallJumpAway.x;
-				velocity.y = wallJumpAway.y;
-				jumping = true;
-
-				onWallJumpAway.Invoke();
-			}
 			// Jump up a wall
-			else {
+			else if ((wallDirX == -1 && moveX < 0f) || (wallDirX == 1 && moveX > 0f)) {
+				// Debug.Log("Jump up a wall");
+
 				StopCoroutine(DisableMovementWallJumpOff(0));
 				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
 
@@ -191,6 +209,19 @@ public class Player : MonoBehaviour {
 				jumping = true;
 
 				onWallJumpUp.Invoke();
+			}
+			// Jump away from a wall
+			else {
+				// Debug.Log(" Jump away from a wall");
+
+				StopCoroutine(DisableMovementWallJumpOff(0));
+				StartCoroutine(DisableMovementWallJumpOff(wallJumpAwayControlDelay));
+
+				velocity.x = -wallDirX * wallJumpAway.x;
+				velocity.y = wallJumpAway.y;
+				jumping = true;
+
+				onWallJumpAway.Invoke();
 			}
 		}
 		else if (!applyJumpQueue) {
@@ -250,6 +281,7 @@ public class Player : MonoBehaviour {
 
 	private void HandleWallSliding () {
 		wallSliding = false;
+		onLeftWall = onRightWall = false;
 
 		if ((controller.collInfo.left && moveX == -1 || controller.collInfo.right && moveX == 1) &&
 			!grounded && velocity.y < 0) {
@@ -299,8 +331,12 @@ public class Player : MonoBehaviour {
 			velocity.y = 0;
 		}
 
+		if (controller.collInfo.above || controller.collInfo.below ||
+			controller.collInfo.left || controller.collInfo.right) {
+			jumping = false;
+		}
+
 		if (controller.collInfo.touchedHazard) {
-			//deathFade.StartDeathFadeCoroutine();
 			touchedHazard.Invoke();
 		}
 
