@@ -129,6 +129,9 @@ public class Controller2D :	RaycastController
 		}
 
 		if (terrainDetected) {
+			collInfo.left = directionX == -1;
+			collInfo.right = directionX == 1;
+
 			if (closestTerrainHit.colliderTag == "JumpPlatform") {
 				if (closestTerrainHit.distance == 0) {
 					collInfo.hitJumpPlatform = true;
@@ -142,8 +145,6 @@ public class Controller2D :	RaycastController
 			}
 
 			movementDistance.x = Mathf.Min(Mathf.Abs(movementDistance.x), (closestTerrainHit.distance - skinWidth)) * directionX;
-			collInfo.left = directionX == -1;
-			collInfo.right = directionX == 1;
 		}
 	}
 
@@ -225,16 +226,16 @@ public class Controller2D :	RaycastController
 				}
 			}
 
+			collInfo.above = directionY == 1;
+			collInfo.below = directionY == -1;
+			collInfo.belowLastFrame = collInfo.below ? true : false;
+
 			if (closestTerrainHit.colliderTag == "JumpPlatform") {
 				collInfo.hitJumpPlatform = true;
 				return;
 			}
 
 			movementDistance.y = (closestTerrainHit.distance - skinWidth) * directionY;
-
-			collInfo.above = directionY == 1;
-			collInfo.below = directionY == -1;
-			collInfo.belowLastFrame = collInfo.below ? true : false;
 		}
 		else if (collInfo.belowLastFrame && !collInfo.below) {
 			collInfo.belowLastFrame = false;
